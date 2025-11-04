@@ -4,10 +4,10 @@ import sequelize from '../config/database.js'; // We'll create this next
 // Define the attributes interface
 interface UserAttributes {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
-  phone?: string;
   role: 'USER' | 'ADMIN';
   createdAt?: Date;
   updatedAt?: Date;
@@ -19,10 +19,10 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'create
 // Define the User model class
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: string;
-  public name!: string;
+  public firstName!: string;
+  public lastName!: string;
   public email!: string;
   public password!: string;
-  public phone?: string;
   public role!: 'USER' | 'ADMIN';
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -36,7 +36,11 @@ User.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    name: {
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lastName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -51,10 +55,6 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    phone: {
-      type: DataTypes.STRING,
-      allowNull: true,
     },
     role: {
       type: DataTypes.ENUM('USER', 'ADMIN'),

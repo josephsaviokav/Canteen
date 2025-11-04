@@ -4,17 +4,17 @@ import { userService } from '../services/index.js';
 // Create user
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { email, password, name, phone, role } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
 
     // Validate required fields
-    if (!email || !password || !name) {
+    if (!email || !password || !firstName || !lastName) {
       return res.status(400).json({
         success: false,
-        error: 'Email, password, and name are required',
+        error: 'Email, password, first name, and last name are required',
       });
     }
 
-    const user = await userService.createUser({ email, password, name, phone, role });
+    const user = await userService.createUser({ email, password, firstName, lastName, role });
 
     res.status(201).json({
       success: true,
@@ -81,9 +81,9 @@ const updateUser = async (req: Request, res: Response) => {
         error: 'User ID is required',
       });
     }
-    const { name, email, phone, password, role } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
 
-    const user = await userService.updateUser(id, { name, email, phone, password, role });
+    const user = await userService.updateUser(id, { firstName, lastName, email, password, role });
 
     res.json({
       success: true,

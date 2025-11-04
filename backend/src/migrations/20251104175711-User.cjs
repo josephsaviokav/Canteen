@@ -10,7 +10,11 @@ module.exports = {
         primaryKey : true,
         allowNull : false
       },
-      name : {
+      firstName : {
+        type : Sequelize.STRING,
+        allowNull : false
+      },
+      lastName : {
         type : Sequelize.STRING,
         allowNull : false
       },
@@ -20,10 +24,6 @@ module.exports = {
         unique : true
       },
       password : {
-        type : Sequelize.STRING,
-        allowNull : false
-      },
-      phone : {
         type : Sequelize.STRING,
         allowNull : false
       },
@@ -42,8 +42,6 @@ module.exports = {
         defaultValue : Sequelize.NOW
       }
     })
-    
-//    await queryInterface.addIndex('users', ['email']);
   },
 
   async down (queryInterface, Sequelize) {
@@ -56,5 +54,3 @@ module.exports = {
      */
   }
 };
-
-

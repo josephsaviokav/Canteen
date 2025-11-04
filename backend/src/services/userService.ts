@@ -1,11 +1,11 @@
-import User from '../models/User.js';
+import User from '../models/user.js';
 import bcrypt from 'bcrypt';
 
 const createUser = async (data: {
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
-    name: string;
-    phone?: string;
     role?: 'USER' | 'ADMIN';
   }) => {
     // Check if email already exists
@@ -19,10 +19,10 @@ const createUser = async (data: {
 
     // Create user
     const user = await User.create({
+      firstName: data.firstName,
+      lastName: data.lastName,
       email: data.email,
       password: hashedPassword,
-      name: data.name,
-      ...(data.phone !== undefined && { phone: data.phone }),
       role: data.role || 'USER',
     });
 
@@ -67,9 +67,9 @@ const getAllUsers = async () => {
 
   // Update user
  const updateUser = async (id: string, data: {
-    name?: string;
+    firstName?: string;
+    lastName?: string;
     email?: string;
-    phone?: string;
     password?: string;
     role?: 'USER' | 'ADMIN';
   }) => {
