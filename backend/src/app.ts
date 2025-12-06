@@ -1,8 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 
-// Import models to register them
-import { User , Item, Order , OrderItem } from './models/index.js';
+// Import routes
+import { userRouter } from './routes/index.js';
+
+// Import middleware
+import { errorHandler } from './middleware/index.js';
 
 const app = express();
 
@@ -13,15 +16,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // Health check
 app.get('/', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'Canteen API Server is running',
     timestamp: new Date().toISOString()
   });
 });
 
-// TODO: Add your routes here
-// app.use('/api/users', userRoutes);
+// API Routes
+app.use('/api/v1/users', userRouter);
+// TODO: Add more routes
 // app.use('/api/items', itemRoutes);
 // app.use('/api/orders', orderRoutes);
 
@@ -29,8 +33,11 @@ app.get('/', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    error: 'Route not found',
+    message: 'Route not found',
   });
 });
+
+// Global error handler (MUST be last)
+app.use(errorHandler);
 
 export default app;
