@@ -1,0 +1,171 @@
+{
+  "users": {
+    "tableName": "users",
+    "fields": {
+      "id": {
+        "type": "UUID",
+        "nullable": false,
+        "primaryKey": true,
+        "default": "UUIDV4"
+      },
+      "firstName": {
+        "type": "STRING",
+        "nullable": false
+      },
+      "lastName": {
+        "type": "STRING",
+        "nullable": false
+      },
+      "email": {
+        "type": "STRING",
+        "nullable": false,
+        "unique": true
+      },
+      "password": {
+        "type": "STRING",
+        "nullable": false,
+        "note": "Hashed, never returned in API responses"
+      },
+      "phone": {
+        "type": "STRING",
+        "nullable": false,
+        "unique": true
+      },
+      "role": {
+        "type": "ENUM",
+        "values": ["admin", "customer"],
+        "nullable": false,
+        "default": "customer"
+      },
+      "createdAt": {
+        "type": "DATE",
+        "nullable": false
+      },
+      "updatedAt": {
+        "type": "DATE",
+        "nullable": false
+      }
+    }
+  },
+  "items": {
+    "tableName": "items",
+    "fields": {
+      "id": {
+        "type": "UUID",
+        "nullable": false,
+        "primaryKey": true,
+        "default": "UUIDV4"
+      },
+      "name": {
+        "type": "STRING",
+        "nullable": false
+      },
+      "price": {
+        "type": "DECIMAL(10,2)",
+        "nullable": false
+      },
+      "imageUrl": {
+        "type": "STRING",
+        "nullable": false
+      },
+      "available": {
+        "type": "BOOLEAN",
+        "nullable": false,
+        "default": true
+      },
+      "createdAt": {
+        "type": "DATE",
+        "nullable": false
+      },
+      "updatedAt": {
+        "type": "DATE",
+        "nullable": false
+      }
+    }
+  },
+  "orders": {
+    "tableName": "orders",
+    "fields": {
+      "id": {
+        "type": "UUID",
+        "nullable": false,
+        "primaryKey": true,
+        "default": "UUIDV4"
+      },
+      "userId": {
+        "type": "UUID",
+        "nullable": false,
+        "foreignKey": {
+          "table": "users",
+          "column": "id"
+        }
+      },
+      "totalAmount": {
+        "type": "DECIMAL(10,2)",
+        "nullable": false
+      },
+      "status": {
+        "type": "ENUM",
+        "values": ["pending", "completed", "canceled"],
+        "nullable": false,
+        "default": "pending"
+      },
+      "createdAt": {
+        "type": "DATE",
+        "nullable": false
+      },
+      "updatedAt": {
+        "type": "DATE",
+        "nullable": false
+      }
+    }
+  },
+  "orderItems": {
+    "tableName": "orderItems",
+    "fields": {
+      "id": {
+        "type": "UUID",
+        "nullable": false,
+        "primaryKey": true,
+        "default": "UUIDV4"
+      },
+      "orderId": {
+        "type": "UUID",
+        "nullable": false,
+        "foreignKey": {
+          "table": "orders",
+          "column": "id"
+        }
+      },
+      "itemId": {
+        "type": "UUID",
+        "nullable": false,
+        "foreignKey": {
+          "table": "items",
+          "column": "id"
+        }
+      },
+      "quantity": {
+        "type": "INTEGER",
+        "nullable": false
+      },
+      "price": {
+        "type": "DECIMAL(10,2)",
+        "nullable": false,
+        "note": "Snapshot of item price at time of order"
+      },
+      "subTotal": {
+        "type": "DECIMAL(10,2)",
+        "nullable": false
+      },
+      "createdAt": {
+        "type": "DATE",
+        "nullable": false
+      },
+      "updatedAt": {
+        "type": "DATE",
+        "nullable": false
+      }
+    }
+  }
+}
