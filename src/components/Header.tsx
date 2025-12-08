@@ -1,23 +1,40 @@
 "use client";
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 
 export default function Header() {
-  const { getTotalItems } = useCart();
-  const totalItems = getTotalItems();
+  const router = useRouter();
+  const { cart } = useCart();
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <span className="text-2xl">🍵</span>
-          <span className="text-xl font-semibold text-gray-800">Can Tea</span>
-        </Link>
+        <h1
+          className="text-2xl font-bold text-gray-900 cursor-pointer"
+          onClick={() => router.push("/")}
+        >
+          🍵 Can Tea N
+        </h1>
+        
+        <nav className="flex gap-4">
+          <button
+            onClick={() => router.push("/")}
+            className="text-gray-700 hover:text-gray-900 font-medium"
+          >
+            Menu
+          </button>
+          <button
+            onClick={() => router.push("/orders")}
+            className="text-gray-700 hover:text-gray-900 font-medium"
+          >
+            Orders
+          </button>
+        </nav>
         
         <div className="flex items-center gap-4">
-          <Link
-            href="/cart"
+          <button
+            onClick={() => router.push("/cart")}
             className="relative w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
           >
             <svg
@@ -34,12 +51,12 @@ export default function Header() {
                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
               />
             </svg>
-            {totalItems > 0 && (
+            {cart.length > 0 && (
               <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                {totalItems}
+                {cart.length}
               </span>
             )}
-          </Link>
+          </button>
           
           <button className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors">
             <svg
