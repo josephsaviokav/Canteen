@@ -4,9 +4,12 @@ import sequelize from '../config/database.js';
 // Define the attributes interface
 export interface UserAttributes {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
+  phone?: string;
+  role: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,9 +21,12 @@ export interface UserCreationAttributes
 // Define the User model class
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: string;
-  public name!: string;
+  public firstName!: string;
+  public lastName!: string;
   public email!: string;
   public password!: string;
+  public role!: "customer" | "admin" ;
+  public phone?: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -34,7 +40,11 @@ User.init(
       primaryKey: true,
       allowNull: false,
     },
-    name: {
+    firstName: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    lastName: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },
@@ -45,6 +55,14 @@ User.init(
     },
     password: {
       type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    phone: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING(50),
       allowNull: false,
     },
     createdAt: {

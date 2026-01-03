@@ -25,7 +25,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
         });
 
         // Generate JWT token (auto-login after signup)
-        const token = generateToken(user.id, user.email, user.role);
+        const token = generateToken(user.id, user.email, user.role as "customer" | "admin");
 
         res.status(201).json({
             success: true,
@@ -55,10 +55,10 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
         const user = await userService.signIn(email, password);
 
         // Generate JWT token
-        const token = generateToken(user.id, user.email, user.role);
+        const token = generateToken(user.id, user.email, user.role as "customer" | "admin");
 
         res.status(200).json({
-            success: true,
+            success: true,      
             message: 'Sign in successful',
             data: {
                 user,

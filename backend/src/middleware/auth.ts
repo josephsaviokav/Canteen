@@ -15,7 +15,7 @@ declare global {
 }
 
 // JWT Secret from environment variable
-const JWT_SECRET = process.env.JWT_SECRET || 'your-default-secret-change-this';
+const JWT_SECRET = process.env.JWT_SECRET || 'abcd1234defaultsecret';
 
 const auth = async (req: Request, res: Response, next: NextFunction) => {
     try {

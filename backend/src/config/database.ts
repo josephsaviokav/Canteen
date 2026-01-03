@@ -1,18 +1,16 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Use SQLite for development (simple file-based database)
 const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: path.join(__dirname, '../../database.sqlite'),
-  logging: console.log,
+  database: process.env.DB_NAME || 'canteen',
+  username: process.env.DB_USERNAME || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+  host: process.env.DB_HOST || '127.0.0.1',
+  port: Number(process.env.DB_PORT) || 5432,
+  dialect: 'postgres',
+  logging: console.log, // Set to console.log to see SQL queries
 });
 
 export default sequelize;

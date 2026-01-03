@@ -1,14 +1,11 @@
 import express from 'express';
-import {
-  processPayment,
-  getPaymentByOrderId,
-  getAllPayments,
-} from '../controllers/paymentController.js';
+import { paymentController } from '../controller';
+import { auth } from '../middleware';
 
-const router = express.Router();
+const paymentRouter = express.Router();
 
-router.post('/process', processPayment);
-router.get('/order/:orderId', getPaymentByOrderId);
-router.get('/', getAllPayments);
+paymentRouter.post('/process', auth, paymentController.processPayment);
+paymentRouter.get('/order/:orderId', auth, paymentController.getPaymentByOrderId);
+paymentRouter.get('/', auth, paymentController.getAllPayments);
 
-export default router;
+export default paymentRouter;
