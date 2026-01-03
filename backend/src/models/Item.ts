@@ -8,13 +8,14 @@ export interface ItemAttributes {
   price: number;
   imageUrl: string;
   available: boolean;
+  deletedAt?: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 // Define creation attributes
 export interface ItemCreationAttributes 
-  extends Optional<ItemAttributes, 'id' | 'createdAt' | 'updatedAt' | 'available'> {}
+  extends Optional<ItemAttributes, 'id' | 'createdAt' | 'updatedAt' | 'available' | 'deletedAt'> {}
 
 // Define the Item model class
 class Item extends Model<ItemAttributes, ItemCreationAttributes> implements ItemAttributes {
@@ -23,6 +24,7 @@ class Item extends Model<ItemAttributes, ItemCreationAttributes> implements Item
   public price!: number;
   public imageUrl!: string;
   public available!: boolean;
+  public readonly deletedAt?: Date | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -65,12 +67,17 @@ Item.init(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
     tableName: 'items',
     timestamps: true,
     underscored: false,
+    paranoid: true,
   }
 );
 

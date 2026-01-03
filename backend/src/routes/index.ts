@@ -1,5 +1,7 @@
-import userRouter from "./userRoutes.js";
+import userRouter from './userRoutes.js';
+import itemRoutes from './itemRoutes.js';
 
 export {
-    userRouter
+  userRouter,
+  itemRoutes
 };

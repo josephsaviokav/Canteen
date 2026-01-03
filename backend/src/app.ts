@@ -1,16 +1,21 @@
 import express from 'express';
 import cors from 'cors';
 
-// Import routes
-import { userRouter } from './routes/index.js';
+// Routes
+import { userRouter, itemRoutes } from './routes/index.js';
+import orderRoutes from './routes/orderRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
-// Import middleware
+// Middleware
 import { errorHandler } from './middleware/index.js';
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Global middleware
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -19,15 +24,15 @@ app.get('/', (req, res) => {
   res.json({
     status: 'OK',
     message: 'Canteen API Server is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
 // API Routes
 app.use('/api/v1/users', userRouter);
-// TODO: Add more routes
-// app.use('/api/items', itemRoutes);
-// app.use('/api/orders', orderRoutes);
+app.use('/api/v1/items', itemRoutes);
+app.use('/api/v1/orders', orderRoutes);
+app.use('/api/v1/payments', paymentRoutes);
 
 // 404 handler
 app.use((req, res) => {
