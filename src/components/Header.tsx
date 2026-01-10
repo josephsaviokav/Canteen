@@ -2,10 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
 
 export default function Header() {
   const router = useRouter();
   const { cart } = useCart();
+  const { user, logout } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-10">
@@ -14,9 +18,9 @@ export default function Header() {
           className="text-2xl font-bold text-gray-900 cursor-pointer"
           onClick={() => router.push("/")}
         >
-          🍵 Can Tea N
+          🍵 Can-Tea-N
         </h1>
-        
+
         <nav className="flex gap-4">
           <button
             onClick={() => router.push("/")}
@@ -31,7 +35,7 @@ export default function Header() {
             Orders
           </button>
         </nav>
-        
+
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.push("/cart")}
@@ -57,23 +61,52 @@ export default function Header() {
               </span>
             )}
           </button>
-          
-          <button className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-gray-700"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+
+          {user ? (
+            <div className="relative">
+              <button
+                onClick={() => setDropdownOpen((prev) => !prev)}
+                className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
+              >
+                <span className="text-gray-700 font-semibold">
+                  {user.name[0]}
+                </span>
+              </button>
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md">
+                  <button
+                    onClick={() => {
+                      logout();
+                      setDropdownOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => router.push("/login")}
+              className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 text-gray-700"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </button>
+          )}
         </div>
       </div>
     </header>
