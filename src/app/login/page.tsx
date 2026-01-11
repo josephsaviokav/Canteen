@@ -4,7 +4,8 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { usersApi } from "@/lib/api";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -18,32 +19,53 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const usersStr = localStorage.getItem("users");
-    if (!usersStr) {
-      setError("No accounts found. Please sign up.");
-      return;
-    }
+    // const usersStr = localStorage.getItem("users");
+    // if (!usersStr) {
+    //   setError("No accounts found. Please sign up.");
+    //   return;
+    // }
 
-    const users: {
-      name: string;
-      email: string;
-      password: string;
-      role: "Customer" | "Admin";
-    }[] = JSON.parse(usersStr);
+    // const users: {
+    //   email: string;
+    //   password: string;
+    //   role: "customer" | "admin";
+    // };
 
-    const matchedUser = users.find((u) => u.email === email);
+    // const email = email;
+    //   const password = password;
 
-    if (!matchedUser) {
-      setError("No accounts found. Please sign up.");
-      return;
-    }
+    const existingUser = usersApi.signIn(email, password)
+      .then((data) => {
+        if (data.success && data.data) {
+          // Store user and token
+          localStorage.setItem("user", JSON.stringify(data.data.user));
+          localStorage.setItem("token", data.data.token);
+          login(data.data.user, data.data.token);
 
-    if (matchedUser.password !== password) {
-      setError("Incorrect password");
-      return;
-    }
 
-    login(matchedUser);
+          // Redirect to the page came from or home
+          const previous = sessionStorage.getItem("redirectAfterLogin");
+          router.push(previous || "/");
+        } else {
+          setError(data.message || "Sign in failed");
+          redirect("/users/signup");
+        }
+      })
+      .catch((err) => {
+        setError(err.message || "Sign in failed");
+      });
+
+    // if (!matchedUser) {
+    //   setError("No accounts found. Please sign up.");
+    //   return;
+    // }
+
+    // if (matchedUser.password !== password) {
+    //   setError("Incorrect password");
+    //   return;
+    // }
+
+    // login(matchedUser);
 
     // Redirect to the page came from
     const previous = sessionStorage.getItem("redirectAfterLogin");
@@ -72,7 +94,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
                   placeholder="you@example.com"
                 />
               </div>
@@ -86,7 +108,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
                   placeholder="••••••••"
                 />
               </div>
@@ -97,7 +119,7 @@ export default function LoginPage() {
                   onChange={(e) =>
                     setRole(e.target.value as "Customer" | "Admin")
                   }
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none text-gray-700"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
                 >
                   <option value="Customer">Customer</option>
                   <option value="Admin">Admin</option>
