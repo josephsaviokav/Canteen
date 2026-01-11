@@ -6,20 +6,23 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSearchParams } from "next/navigation";
+import { usersApi } from "@/lib/api";
 
 export default function SignUpPage() {
   const router = useRouter();
   const { login } = useAuth();
-
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/";
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -28,28 +31,49 @@ export default function SignUpPage() {
     }
 
     const newUser = {
-      name,
+      firstName,
+      lastName,
+      phone,
       email,
       password,
-      role: "Customer" as const,
+      role: "customer" as const,
     };
 
-    const usersStr = localStorage.getItem("users");
-    const users: (typeof newUser)[] = usersStr ? JSON.parse(usersStr) : [];
+    // const usersStr = localStorage.getItem("users");
+    // const users: (typeof newUser)[] = usersStr ? JSON.parse(usersStr) : [];
 
-    if (users.some((u) => u.email === email)) {
-      setError("Email already registered");
-      return;
-    }
+    // if (users.some((u) => u.email === email)) {
+    //   setError("Email already registered");
+    //   return;
+    // }
 
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
+    // users.push(newUser);
+    // localStorage.setItem("users", JSON.stringify(users));
 
-    localStorage.setItem("user", JSON.stringify(newUser));
+    // localStorage.setItem("user", JSON.stringify(newUser));
 
-    login(newUser);
-
-    router.push(redirect);
+    usersApi.signUp(newUser)
+      .then((data) => {
+        if (data.success && data.data) {
+          // Store user and token
+          localStorage.setItem("user", JSON.stringify(data.data.user));
+          localStorage.setItem("token", data.data.token);
+          
+          // Login user in context
+          //login(data.data.user, data.data.token);
+          
+          // Redirect to home or redirect URL
+          router.push(redirect);
+        } else {
+          setError(data.message || "Sign up failed");
+        }
+      })
+      .catch((apiError) => {
+        setError(apiError.message || "Sign up failed");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -71,17 +95,46 @@ export default function SignUpPage() {
             <form onSubmit={handleSignUp} className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Name
+                  First Name
                 </label>
                 <input
                   type="text"
                   required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                  placeholder="Your Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  placeholder="Your First Name"
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  placeholder="Your Last Name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  placeholder="Your Phone Number"
+                />
+              </div>
+
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -92,7 +145,7 @@ export default function SignUpPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
                   placeholder="you@example.com"
                 />
               </div>
@@ -106,7 +159,7 @@ export default function SignUpPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
                   placeholder="••••••••"
                 />
               </div>
@@ -120,7 +173,7 @@ export default function SignUpPage() {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:ring-2 focus:ring-green-500 focus:outline-none"
                   placeholder="••••••••"
                 />
               </div>
@@ -129,9 +182,10 @@ export default function SignUpPage() {
 
               <button
                 type="submit"
-                className="w-full bg-green-500 text-white font-semibold py-2 rounded-lg hover:bg-green-600 transition-colors"
+                disabled={loading}
+                className="w-full bg-green-500 text-white font-semibold py-2 rounded-lg hover:bg-green-600 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                Sign Up
+                {loading ? "Signing up..." : "Sign Up"}
               </button>
             </form>
 
