@@ -69,7 +69,7 @@ export default function Header() {
                 className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors"
               >
                 <span className="text-gray-700 font-semibold">
-                  {user.name[0]}
+                  {user.firstName.charAt(0).toUpperCase()}
                 </span>
               </button>
               {dropdownOpen && (

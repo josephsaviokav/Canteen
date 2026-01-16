@@ -1,4 +1,58 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+
+// Users API
+export const usersApi = {
+  // Sign up
+  signUp: async (userData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    phone: string;
+    role?: string;
+  }) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      console.log('Sign up API Response:', await response.clone().json());
+      
+      return response.json();
+    } catch (error) {
+      console.error('Sign up API Error:', error);
+      throw error;
+    }
+  },
+
+  // Sign in
+  signIn: async (email: string, password: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users/signin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      return response.json();
+    } catch (error) {
+      console.error('Sign in API Error:', error);
+      throw error;
+    }
+  },
+};
 
 // Orders API
 export const ordersApi = {
