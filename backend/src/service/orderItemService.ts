@@ -70,6 +70,25 @@ const getOrderItemById = async (id: string): Promise<OrderItem | null> => {
   }
 };
 
+const getOrderItemsByUserId = async (userId: string): Promise<OrderItem[]> => {
+  try{
+    const orderItems = await OrderItem.findAll({
+      where: { '$order.userId$': userId },
+      include: [
+        {
+          model: Item,
+          as: 'item',
+          attributes: ['id', 'name', 'price', 'imageUrl'],
+        },
+      ],
+    });
+    
+    return orderItems;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch order items for user: ${error.message}`);
+  }
+};
+
 // Get order items by order ID
 const getOrderItemsByOrderId = async (orderId: string): Promise<OrderItem[]> => {
   try {
@@ -133,6 +152,7 @@ export default {
   createOrderItem,
   getAllOrderItems, 
   getOrderItemById,
+  getOrderItemsByUserId,
   getOrderItemsByOrderId,
   updateOrderItem,
   deleteOrderItem,

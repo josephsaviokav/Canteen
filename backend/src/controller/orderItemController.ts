@@ -47,6 +47,21 @@ const getOrderItemById = async (req: Request, res: Response) => {
   }
 };
 
+const getOrderItemsByUserId = async (req: Request, res: Response) => {
+  try {
+    const orderItems = await orderItemService.getOrderItemsByUserId(req.params.userId);
+    res.json({
+      success: true,
+      data: orderItems,
+    });
+  } catch (error: any) {
+    res.status(404).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 const getOrderItemsByOrderId = async (req: Request, res: Response) => {
   try {
     const orderItems = await orderItemService.getOrderItemsByOrderId(req.params.orderId);
@@ -97,6 +112,7 @@ export default {
   createOrderItem,
   getAllOrderItems,
   getOrderItemById,
+  getOrderItemsByUserId,
   getOrderItemsByOrderId,
   updateOrderItem,
   deleteOrderItem,
