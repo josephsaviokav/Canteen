@@ -67,6 +67,23 @@ orderItemRouter.get('/order/:orderId', orderItemController.getOrderItemsByOrderI
 
 /**
  * @swagger
+ * /api/v1/order-items/user/{userId}:
+ *   get:
+ *     tags: [Order Items]
+ *     summary: Get order items by user ID
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Order item details }
+ *       404: { description: Order item not found }
+ */
+orderItemRouter.get('/user/:userId', orderItemController.getOrderItemsByUserId);
+
+/**
+ * @swagger
  * /api/v1/order-items/{id}:
  *   get:
  *     tags: [Order Items]

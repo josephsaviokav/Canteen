@@ -1,4 +1,47 @@
+import { get } from "http";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+
+// Helper function to handle API calls with token validation
+const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+  const token = localStorage.getItem('token');
+  
+  if (token) {
+    // Check if token is expired before making the request
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp * 1000;
+      
+      if (Date.now() >= exp) {
+        // Token expired, clear storage and redirect
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        throw new Error('Token expired');
+      }
+    } catch (error) {
+      console.error('Invalid token:', error);
+    }
+    
+    // Add token to headers
+    options.headers = {
+      ...options.headers,
+      'Authorization': `Bearer ${token}`,
+    };
+  }
+  
+  const response = await fetch(url, options);
+  
+  // Handle 401 Unauthorized (expired or invalid token)
+  if (response.status === 401) {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+    throw new Error('Unauthorized - please login again');
+  }
+  
+  return response;
+};
 
 // Users API
 export const usersApi = {
@@ -157,3 +200,32 @@ export const paymentsApi = {
     return response.json();
   },
 };
+
+export const itemsApi = {
+  // Get all items
+  getAll: async () => {
+    const response = await fetch(`${API_BASE_URL}/items`);
+    const json = await response.json();
+    return json.data; // Extract the data array from the response
+  }
+}
+
+export const itemOrdersApi = {
+  // Create new order
+  create: async (itemId: string, orderId: string, quantity: number) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/item-orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId, orderId, quantity }),
+      });
+    } catch (error) {
+      console.error('API Error:', error);
+      throw error;
+    }
+  },
+  getAll: async () => {
+    const response = await fetch(`${API_BASE_URL}/item-orders`);
+    return response.json();
+  }
+}

@@ -3,16 +3,16 @@
 import React, { createContext, useContext, useState } from "react";
 
 export interface CartItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
-  image: string;
+  imageUrl: string;
 }
 
 interface CartContextType {
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
-  removeFromCart: (itemId: number) => void;
+  removeFromCart: (itemId: string) => void;
   clearCart: () => void;
 }
 
@@ -25,7 +25,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCart((prev) => [...prev, item]);
   };
 
-  const removeFromCart = (itemId: number) => {
+  const removeFromCart = (itemId: string) => {
     setCart((prev) =>
       prev.filter((_, index) => index !== prev.findIndex((item) => item.id === itemId))
     );
