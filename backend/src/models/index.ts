@@ -3,6 +3,7 @@ import Item from "./Item";
 import Order from "./Order";
 import OrderItem from "./OrderItem";
 import Payment from "./Payment";
+import Cart from "./Cart";
 
 // Define associations
 Order.hasOne(Payment, {
@@ -46,6 +47,27 @@ OrderItem.belongsTo(Item, {
   as: 'item',
 });
 
+// Cart associations
+User.hasMany(Cart, {
+  foreignKey: 'userId',
+  as: 'cartItems',
+});
+
+Cart.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',
+});
+
+Item.hasMany(Cart, {
+  foreignKey: 'itemId',
+  as: 'cartItems',
+});
+
+Cart.belongsTo(Item, {
+  foreignKey: 'itemId',
+  as: 'item',
+});
+
 // Export all models
 export {
   User,
@@ -53,4 +75,5 @@ export {
   Order,
   OrderItem,
   Payment,
+  Cart,
 };

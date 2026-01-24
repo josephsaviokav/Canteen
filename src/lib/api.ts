@@ -99,6 +99,27 @@ export const usersApi = {
 
 // Orders API
 export const ordersApi = {
+  // Create order from cart (Checkout)
+  checkout: async (userId: string) => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/orders/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      return response.json();
+    } catch (error) {
+      console.error('Checkout API Error:', error);
+      throw error;
+    }
+  },
+
   // Create new order
   create: async (userId: string, totalAmount: number, items: any[]) => {
     try {
@@ -122,19 +143,19 @@ export const ordersApi = {
 
   // Get all orders
   getAll: async () => {
-    const response = await fetch(`${API_BASE_URL}/orders`);
+    const response = await fetchWithAuth(`${API_BASE_URL}/orders`);
     return response.json();
   },
 
   // Get order by ID
   getById: async (id: string) => {
-    const response = await fetch(`${API_BASE_URL}/orders/${id}`);
+    const response = await fetchWithAuth(`${API_BASE_URL}/orders/${id}`);
     return response.json();
   },
 
   // Get orders by user ID
   getByUserId: async (userId: string) => {
-    const response = await fetch(`${API_BASE_URL}/orders/user/${userId}`);
+    const response = await fetchWithAuth(`${API_BASE_URL}/orders/user/${userId}`);
     return response.json();
   },
 
@@ -142,7 +163,7 @@ export const ordersApi = {
   updateStatus: async (id: string, status: string) => {
     try {
       console.log(`API: Updating order ${id} to status ${status}`);
-      const response = await fetch(`${API_BASE_URL}/orders/${id}/status`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/orders/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
@@ -165,7 +186,7 @@ export const ordersApi = {
 
   // Delete order
   delete: async (id: string) => {
-    const response = await fetch(`${API_BASE_URL}/orders/${id}`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/orders/${id}`, {
       method: 'DELETE',
     });
     return response.json();
@@ -229,3 +250,75 @@ export const itemOrdersApi = {
     return response.json();
   }
 }
+
+export const cartApi = {
+  // Add item to cart
+  addToCart: async (userId: string, itemId: string, quantity: number) => {  
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/cart/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, itemId, quantity }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      } 
+      return response.json();
+    } catch (error) {
+      console.error('Add to cart API Error:', error);
+      throw error;
+    }
+  },
+
+  // Get cart items by user ID
+  getCartItems: async (userId: string) => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/cart/${userId}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('Get cart items API Error:', error);
+      throw error;
+    }
+  },
+
+  // Update cart item quantity
+  updateCartItem: async (cartItemId: string, quantity: number) => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/cart/update`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cartItemId, quantity }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('Update cart item API Error:', error);
+      throw error;
+    }
+  },
+
+  // Delete cart item
+  deleteCartItem: async (cartItemId: string) => {
+    try { 
+      const response = await fetchWithAuth(`${API_BASE_URL}/cart/delete/${cartItemId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      return;
+    } catch (error) {
+      console.error('Delete cart item API Error:', error);
+      throw error;
+    }
+  },
+};

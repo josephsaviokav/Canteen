@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
 import { useOrder } from "@/contexts/OrderContext";
 import { usePayment } from "@/contexts/PaymentContext";
@@ -11,8 +12,9 @@ import Header from "@/components/Header";
 
 export default function CheckoutPage() {
 	const router = useRouter();
+	const { user } = useAuth();
 	const { cart, clearCart } = useCart();
-	const { addOrder, updateOrderStatus } = useOrder();
+	const { currentOrderItems, currentOrderTotal, checkout, updateOrderStatus } = useOrder();
 	const { addPayment } = usePayment();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -26,7 +28,7 @@ export default function CheckoutPage() {
 		cardholder: "",
 	});
 
-	const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
+	const totalAmount = currentOrderTotal;
 
 	const handlePaymentChange = (field: keyof PaymentDetails, value: string) => {
 		setPaymentDetails((prev) => ({ ...prev, [field]: value }));
@@ -47,18 +49,21 @@ export default function CheckoutPage() {
 		setLoading(true);
 		setError("");
 
-		try {
-			// First, create order in backend with userId
-			const userId = "user-123"; // TODO: Replace with actual logged-in user ID
-			const orderItems = cart.map((item) => ({
-				id: item.id,
-				name: item.name,
-				price: item.price,
-				quantity: 1,
-			}));
+		if (!user) {
+			setError("You must be logged in to complete checkout");
+			setLoading(false);
+			return;
+		}
 
-			// Create order in backend
-			const order = await addOrder(userId, orderItems, totalAmount);
+		const userid : string = user.id!;
+
+		try {
+			// Create order from cart items in backend
+			const order = await checkout(userid);
+
+			if (!order) {
+				throw new Error("Failed to create order");
+			}
 
 			// Process payment with backend
 			const response = await processPayment(totalAmount, paymentDetails);
@@ -127,8 +132,8 @@ export default function CheckoutPage() {
 									key={idx}
 									className="flex justify-between text-gray-700"
 								>
-									<span>{item.name}</span>
-									<span>₹{item.price}</span>
+									<span>{item.item.name}</span>
+									<span>₹{item.item.price}</span>
 								</div>
 							))}
 						</div>
@@ -200,11 +205,12 @@ export default function CheckoutPage() {
 								</label>
 								<input
 									type="text"
-									value={paymentDetails.cardholder}
+									//value={paymentDetails.cardholder}
 									onChange={(e) =>
 										handlePaymentChange("cardholder", e.target.value)
 									}
 									placeholder="John Doe"
+									defaultValue="John Doe"
 									className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
 									required
 								/>
@@ -216,7 +222,8 @@ export default function CheckoutPage() {
 								</label>
 								<input
 									type="text"
-									value={paymentDetails.cardNumber}
+									//value={paymentDetails.cardNumber}
+									defaultValue="4532015112830366"
 									onChange={(e) => {
 										const value = e.target.value.replace(/\D/g, "").slice(0, 16);
 										handlePaymentChange("cardNumber", value);

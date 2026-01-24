@@ -6,6 +6,63 @@ const orderRouter = express.Router();
 
 /**
  * @swagger
+ * /api/v1/orders/checkout:
+ *   post:
+ *     tags: [Orders]
+ *     summary: Create order from cart items (Checkout)
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [userId]
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 format: uuid
+ *                 description: User ID to checkout cart
+ *     responses:
+ *       201:
+ *         description: Order created successfully from cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: uuid
+ *                     userId:
+ *                       type: string
+ *                       format: uuid
+ *                     totalAmount:
+ *                       type: number
+ *                     status:
+ *                       type: string
+ *                     orderItems:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *       400:
+ *         description: Bad request - Cart is empty or invalid userId
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+orderRouter.post('/checkout', auth, orderController.createOrderFromCart);
+
+/**
+ * @swagger
  * /api/v1/orders:
  *   post:
  *     tags: [Orders]

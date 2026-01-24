@@ -1,5 +1,87 @@
 import { Request, Response } from 'express';
-import { Order } from '../models/index';
+import { Order, OrderItem, Cart, Item } from '../models/index';
+
+// CREATE ORDER FROM CART - Checkout function
+const createOrderFromCart = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'userId is required' 
+      });
+    }
+
+    // Get all cart items for the user with item details
+    const cartItems = await Cart.findAll({ 
+      where: { userId },
+      include: [{
+        model: Item,
+        as: 'item',
+        attributes: ['id', 'name', 'price', 'imageUrl', 'available']
+      }]
+    }) as any[];
+
+    if (!cartItems || cartItems.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cart is empty'
+      });
+    }
+
+    // Calculate total amount
+    const totalAmount = cartItems.reduce((sum, cartItem: any) => {
+      return sum + (cartItem.item.price * cartItem.quantity);
+    }, 0);
+
+    // Create the order
+    const order = await Order.create({
+      userId,
+      totalAmount,
+      status: 'pending',
+    });
+
+    // Create order items from cart items
+    const orderItemsData = cartItems.map((cartItem: any) => ({
+      orderId: order.id,
+      itemId: cartItem.itemId,
+      quantity: cartItem.quantity,
+      price: cartItem.item.price,
+      subTotal: cartItem.item.price * cartItem.quantity
+    }));
+
+    await OrderItem.bulkCreate(orderItemsData);
+
+    // Clear the cart after successful order creation
+    await Cart.destroy({ where: { userId } });
+
+    // Fetch the created order with order items and item details
+    const createdOrder = await Order.findByPk(order.id, {
+      include: [{
+        model: OrderItem,
+        as: 'orderItems',
+        include: [{
+          model: Item,
+          as: 'item'
+        }]
+      }]
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Order created successfully',
+      data: createdOrder,
+    });
+  } catch (error: any) {
+    console.error('Create Order From Cart Error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create order from cart',
+      error: error.message,
+    });
+  }
+};
 
 // CREATE - Create new order
 const createOrder = async (req: Request, res: Response) => {
@@ -184,6 +266,7 @@ const deleteOrder = async (req: Request, res: Response) => {
 
 export default{
   createOrder,
+  createOrderFromCart,
   getAllOrders,
   getOrderById,
   getOrdersByUserId,

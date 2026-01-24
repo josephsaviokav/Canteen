@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { ordersApi } from "@/lib/api";
+import { useCart, CartItem } from "./CartContext";
 
 export interface OrderItem {
 	id: number;
@@ -22,7 +23,10 @@ export interface Order {
 
 interface OrderContextType {
 	orders: Order[];
+	currentOrderItems: CartItem[]; // Cart items as current order
+	currentOrderTotal: number; // Total amount of current order
 	loading: boolean;
+	checkout: (userId: string) => Promise<Order>; // Checkout from cart
 	addOrder: (userId: string, items: OrderItem[], totalAmount: number) => Promise<Order>;
 	updateOrderStatus: (orderId: string, status: Order["status"]) => Promise<void>;
 	cancelOrder: (orderId: string) => Promise<void>;
@@ -36,6 +40,15 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined);
 export function OrderProvider({ children }: { children: React.ReactNode }) {
 	const [orders, setOrders] = useState<Order[]>([]);
 	const [loading, setLoading] = useState(false);
+	const { cart, clearCart } = useCart();
+
+	// Current order items from cart
+	const currentOrderItems = cart;
+	
+	// Calculate total amount from cart items
+	const currentOrderTotal = cart.reduce((sum, cartItem) => {
+		return sum + (cartItem.item.price * cartItem.quantity);
+	}, 0);
 
 	// Load orders from backend on mount
 	useEffect(() => {
@@ -51,6 +64,26 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 			}
 		} catch (error) {
 			console.error("Failed to load orders:", error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// Checkout function - creates order from cart
+	const checkout = async (userId: string): Promise<Order> => {
+		try {
+			setLoading(true);
+			const response = await ordersApi.checkout(userId);
+			if (response.success) {
+				const newOrder = response.data;
+				setOrders((prev) => [newOrder, ...prev]);
+				// Cart will be cleared by the backend
+				return newOrder;
+			}
+			throw new Error(response.message || "Failed to checkout");
+		} catch (error) {
+			console.error("Failed to checkout:", error);
+			throw error;
 		} finally {
 			setLoading(false);
 		}
@@ -123,7 +156,10 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 		<OrderContext.Provider
 			value={{
 				orders,
+				currentOrderItems,
+				currentOrderTotal,
 				loading,
+				checkout,
 				addOrder,
 				updateOrderStatus,
 				cancelOrder,

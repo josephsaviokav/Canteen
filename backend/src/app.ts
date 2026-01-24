@@ -4,7 +4,7 @@ import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
 
 // Routes
-import { userRouter, itemRoutes, orderRouter, paymentRouter, orderItemRoutes } from './routes/index';
+import { userRouter, itemRoutes, orderRouter, paymentRouter, orderItemRoutes, cartRouter } from './routes/index';
 
 // Middleware
 import { errorHandler } from './middleware/index';
@@ -48,6 +48,7 @@ app.use('/api/v1/items', itemRoutes);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/payments', paymentRouter);
 app.use('/api/v1/order-items', orderItemRoutes);
+app.use('/api/v1/cart', cartRouter);
 
 // 404 handler
 app.use((req, res) => {

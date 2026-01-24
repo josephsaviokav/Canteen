@@ -95,20 +95,31 @@ export default function Home() {
 		});
 	};
 
-	const handleAddToCart = (item: itemType) => {
+	const handleAddToCart = async (item: itemType) => {
 		const quantity = quantities[item.id] || 1;
 
-		// Add the item to cart multiple times based on quantity
-		for (let i = 0; i < quantity; i++) {
-			addToCart(item as itemType);
-		}
+		try {
+			// Get userId from localStorage
+			const userString = localStorage.getItem("user");
+			if (!userString) {
+				router.push("/login");
+				return;
+			}
+			const user = JSON.parse(userString);
 
-		// Reset quantity and show success feedback
-		setQuantities((prev) => ({ ...prev, [item.id]: 0 }));
-		setAddedItems((prev) => ({ ...prev, [item.id]: true }));
-		setTimeout(() => {
-			setAddedItems((prev) => ({ ...prev, [item.id]: false }));
-		}, 2000);
+			// Call addToCart with correct parameters
+			await addToCart(user.id, item.id, quantity);
+
+			// Reset quantity and show success feedback
+			setQuantities((prev) => ({ ...prev, [item.id]: 0 }));
+			setAddedItems((prev) => ({ ...prev, [item.id]: true }));
+			setTimeout(() => {
+				setAddedItems((prev) => ({ ...prev, [item.id]: false }));
+			}, 2000);
+		} catch (error) {
+			console.error("Failed to add item to cart:", error);
+			alert("Failed to add item to cart. Please try again.");
+		}
 	};
 
 	return (
