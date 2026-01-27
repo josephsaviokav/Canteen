@@ -11,9 +11,15 @@ export default function Header() {
   const { user, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const goTo = (path: string) => {
+    setDropdownOpen(false);
+    router.push(path);
+  };
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        {/* Logo */}
         <h1
           className="text-2xl font-bold text-gray-900 cursor-pointer"
           onClick={() => router.push("/")}
@@ -21,6 +27,7 @@ export default function Header() {
           🍵 Can-Tea-N
         </h1>
 
+        {/* Navigation */}
         <nav className="flex gap-4">
           <button
             onClick={() => router.push("/")}
@@ -28,12 +35,15 @@ export default function Header() {
           >
             Menu
           </button>
-          <button
-            onClick={() => router.push("/orders")}
-            className="text-gray-700 hover:text-gray-900 font-medium"
-          >
-            Orders
-          </button>
+
+          {user && (
+            <button
+              onClick={() => router.push("/user/orders")}
+              className="text-gray-700 hover:text-gray-900 font-medium"
+            >
+              Orders
+            </button>
+          )}
         </nav>
 
         <div className="flex items-center gap-4">
@@ -55,6 +65,7 @@ export default function Header() {
                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
               />
             </svg>
+
             {cart.length > 0 && (
               <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                 {cart.length}
@@ -72,14 +83,23 @@ export default function Header() {
                   {user.firstName.charAt(0).toUpperCase()}
                 </span>
               </button>
+
               {dropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md">
+                <div className="absolute right-0 mt-2 w-44 bg-white border rounded shadow-md">
+                  <button
+                    onClick={() => goTo("/user/dashboard")}
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Dashboard
+                  </button>
+
                   <button
                     onClick={() => {
                       logout();
                       setDropdownOpen(false);
+                      router.push("/");
                     }}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
                   >
                     Logout
                   </button>
