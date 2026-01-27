@@ -18,7 +18,7 @@ export default function AdminLayout({
     if (!loading) {
       if (!user) {
         router.push(`/login?redirect=${pathname}`);
-      } else if (user.role !== "Admin") {
+      } else if (user.role !== "admin") {
         router.push("/");
       }
     }
