@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { ordersApi } from "@/lib/api";
 import { useCart, CartItem } from "./CartContext";
+import { useAuth } from "./AuthContext";
 
 export interface OrderItem {
 	id: number;
@@ -50,12 +51,22 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 		return sum + (cartItem.item.price * cartItem.quantity);
 	}, 0);
 
-	// Load orders from backend on mount
+	const { user, token } = useAuth();
+
+	// Load orders from backend only when user is authenticated
 	useEffect(() => {
-		refreshOrders();
-	}, []);
+		if (token && user) {
+			refreshOrders();
+		}
+	}, [token, user]);
 
 	const refreshOrders = async () => {
+		// Only fetch orders if user is authenticated
+		if (!token || !user) {
+			console.log('No token or user, skipping order refresh');
+			return;
+		}
+
 		try {
 			setLoading(true);
 			const response = await ordersApi.getAll();
@@ -64,6 +75,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 			}
 		} catch (error) {
 			console.error("Failed to load orders:", error);
+			// Don't throw error to prevent breaking the UI
 		} finally {
 			setLoading(false);
 		}

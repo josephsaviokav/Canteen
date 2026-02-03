@@ -34,7 +34,7 @@ export default function LoginPage() {
     // const email = email;
     //   const password = password;
 
-    const existingUser = usersApi.signIn(email, password)
+    usersApi.signIn(email, password)
       .then((data) => {
         if (data.success && data.data) {
           // Store user and token
@@ -42,34 +42,17 @@ export default function LoginPage() {
           localStorage.setItem("token", data.data.token);
           login(data.data.user, data.data.token);
 
-
           // Redirect to the page came from or home
           const previous = sessionStorage.getItem("redirectAfterLogin");
+          sessionStorage.removeItem("redirectAfterLogin"); // Clean up
           router.push(previous || "/");
         } else {
           setError(data.message || "Sign in failed");
-          redirect("/users/signup");
         }
       })
       .catch((err) => {
         setError(err.message || "Sign in failed");
       });
-
-    // if (!matchedUser) {
-    //   setError("No accounts found. Please sign up.");
-    //   return;
-    // }
-
-    // if (matchedUser.password !== password) {
-    //   setError("Incorrect password");
-    //   return;
-    // }
-
-    // login(matchedUser);
-
-    // Redirect to the page came from
-    const previous = sessionStorage.getItem("redirectAfterLogin");
-    router.push(previous || "/");
   };
 
   return (
@@ -85,6 +68,12 @@ export default function LoginPage() {
             </h1>
 
             <form onSubmit={handleLogin} className="space-y-5">
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                  {error}
+                </div>
+              )}
+              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email

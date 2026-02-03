@@ -24,7 +24,7 @@ export default function Header() {
           className="text-2xl font-bold text-gray-900 cursor-pointer"
           onClick={() => router.push("/")}
         >
-          🍵 Can-Tea-N
+          🍜 Nosh & Go
         </h1>
 
         {/* Navigation */}
