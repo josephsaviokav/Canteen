@@ -141,7 +141,7 @@ export default function LoginPage() {
 
           <div className="hidden lg:flex items-center justify-center">
             <div className="w-full h-96 bg-gray-200 rounded-2xl flex items-center justify-center text-gray-500">
-              We'll add something interesting here, like some animation -
+              We&apos;ll add something interesting here, like some animation -
               something interactive and engaging
             </div>
           </div>

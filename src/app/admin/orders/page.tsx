@@ -58,7 +58,7 @@ export default function AdminOrdersPage() {
       setError("");
     } catch (err: unknown) {
       console.error("Error loading data:", err);
-      setError(err.message || "Failed to load data");
+      setError(err instanceof Error ? err.message : "Failed to load data");
     } finally {
       setLoading(false);
     }

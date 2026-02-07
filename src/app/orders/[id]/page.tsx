@@ -27,7 +27,7 @@ export default function OrderDetailsPage() {
 			try {
 				await cancelOrder(order.id);
 				alert("Order cancelled successfully!");
-			} catch (error) {
+			} catch {
 				alert("Failed to cancel order. Please try again.");
 			}
 		}

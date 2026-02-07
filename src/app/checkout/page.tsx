@@ -16,7 +16,7 @@ export default function CheckoutPage() {
 	const router = useRouter();
 	const { user } = useAuth();
 	const { cart, clearCart, refreshCart } = useCart();
-	const { currentOrderItems, currentOrderTotal, checkout, updateOrderStatus } = useOrder();
+	const { currentOrderTotal, checkout, updateOrderStatus } = useOrder();
 	const { addPayment } = usePayment();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -26,6 +26,7 @@ export default function CheckoutPage() {
 	const [cartLoading, setCartLoading] = useState(true);
 
 	// Refresh cart when component mounts to ensure we have latest data
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		const loadCart = async () => {
 			try {
@@ -125,7 +126,7 @@ export default function CheckoutPage() {
 					setError(response.message + " (3 attempts failed)");
 				}
 			}
-		} catch (err) {
+		} catch {
 			setError("Payment failed. Please try again.");
 		} finally {
 			setLoading(false);

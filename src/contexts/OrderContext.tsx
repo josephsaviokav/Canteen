@@ -41,7 +41,7 @@ const OrderContext = createContext<OrderContextType | undefined>(undefined);
 export function OrderProvider({ children }: { children: React.ReactNode }) {
 	const [orders, setOrders] = useState<Order[]>([]);
 	const [loading, setLoading] = useState(false);
-	const { cart, clearCart } = useCart();
+	const { cart } = useCart();
 
 	// Current order items from cart
 	const currentOrderItems = cart;
@@ -58,6 +58,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 		if (token && user) {
 			refreshOrders();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [token, user]);
 
 	const refreshOrders = async () => {
@@ -112,7 +113,8 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
 	const addOrder = async (userId: string, items: OrderItem[], totalAmount: number): Promise<Order> => {
 		try {
-			const response = await ordersApi.create(userId, totalAmount, items);
+			const formattedItems = items.map(item => ({ id: String(item.id), quantity: item.quantity }));
+			const response = await ordersApi.create(userId, totalAmount, formattedItems);
 			if (response.success) {
 				const newOrder = {
 					...response.data,

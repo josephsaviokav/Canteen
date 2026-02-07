@@ -291,7 +291,7 @@ export const itemOrdersApi = {
   // Create new order
   create: async (itemId: string, orderId: string, quantity: number) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/item-orders`, {
+      await fetch(`${API_BASE_URL}/item-orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ itemId, orderId, quantity }),

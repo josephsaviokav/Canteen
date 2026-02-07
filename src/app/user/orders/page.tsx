@@ -13,6 +13,7 @@ export default function UserOrdersPage() {
     if (user) {
       refreshOrders();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const canCancel = (order: { status: string }) => {
@@ -24,7 +25,7 @@ export default function UserOrdersPage() {
       try {
         await cancelOrder(orderId);
         alert("Order cancelled successfully");
-      } catch (error) {
+      } catch {
         alert("Failed to cancel order. Please try again.");
       }
     }

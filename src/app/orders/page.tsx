@@ -10,6 +10,7 @@ export default function OrdersPage() {
 	const { orders, cancelOrder, deleteOrder, loading, refreshOrders } = useOrder();
 
 	// Refresh orders on mount
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		refreshOrders();
 	}, []);
