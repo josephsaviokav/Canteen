@@ -1,5 +1,5 @@
-import auth from "./auth.js";
-import isAdmin from "./isAdmin.js";
-import errorHandler from "./errorHandler.js";
+import auth from "./auth";
+import isAdmin from "./isAdmin";
+import errorHandler from "./errorHandler";
 
 export { auth, isAdmin, errorHandler };

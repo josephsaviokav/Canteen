@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
-import { userService } from '../service/index.js';
-import { generateToken } from '../middleware/auth.js';
+import { userService } from '../service/index';
+import { generateToken } from '../middleware/auth';
 
 // Sign up a new user
 const signUp = async (req: Request, res: Response, next: NextFunction) => {
@@ -25,7 +25,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
         });
 
         // Generate JWT token (auto-login after signup)
-        const token = generateToken(user.id, user.email, user.role);
+        const token = generateToken(user.id, user.email, user.role as "customer" | "admin");
 
         res.status(201).json({
             success: true,
@@ -55,10 +55,10 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
         const user = await userService.signIn(email, password);
 
         // Generate JWT token
-        const token = generateToken(user.id, user.email, user.role);
+        const token = generateToken(user.id, user.email, user.role as "customer" | "admin");
 
         res.status(200).json({
-            success: true,
+            success: true,      
             message: 'Sign in successful',
             data: {
                 user,
@@ -79,6 +79,20 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
             success: true,
             message: 'Users retrieved successfully',
             data: users
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getAllCustomers = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const customers = await userService.getAllCustomers();  
+
+        res.status(200).json({
+            success: true,
+            message: 'Customers retrieved successfully',
+            data: customers
         });
     } catch (error) {
         next(error);
@@ -198,6 +212,7 @@ export default {
     signUp,
     signIn,
     getAllUsers,
+    getAllCustomers,
     getUserById,
     updateUser,
     updatePassword,

@@ -5,6 +5,10 @@ export interface PaymentDetails {
 	cardholder: string;
 }
 
+export interface UpiDetails {
+	upiId: string;
+}
+
 export interface PaymentResponse {
 	success: boolean;
 	transactionId?: string;
@@ -112,6 +116,60 @@ export async function processPayment(
 				resolve({
 					success: false,
 					message: "Payment declined. Please try again.",
+				});
+			}
+		}, 2000);
+	});
+}
+
+// Validate UPI ID
+function validateUpiId(upiId: string): boolean {
+	// UPI ID format: username@bankname
+	const upiRegex = /^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{2,}$/;
+	return upiRegex.test(upiId);
+}
+
+// Simulate UPI payment processing
+export async function processUpiPayment(
+	amount: number,
+	upiDetails: UpiDetails
+): Promise<PaymentResponse> {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			// Validation
+			if (!upiDetails.upiId.trim()) {
+				resolve({
+					success: false,
+					message: "UPI ID is required",
+				});
+				return;
+			}
+
+			if (!validateUpiId(upiDetails.upiId)) {
+				resolve({
+					success: false,
+					message: "Invalid UPI ID format. Use format: username@bankname",
+				});
+				return;
+			}
+
+			// Test UPI IDs for demo (always succeed)
+			const testUpiIds = ['test@paytm', 'demo@googlepay', 'success@phonepe'];
+			const isTestUpi = testUpiIds.includes(upiDetails.upiId.toLowerCase());
+
+			// Test UPIs = 100% success, others = 95% success
+			const isSuccess = isTestUpi ? true : Math.random() < 0.95;
+
+			if (isSuccess) {
+				resolve({
+					success: true,
+					transactionId: `UPI-${Date.now()}`,
+					message: "UPI payment successful",
+				});
+			} else {
+				resolve({
+					success: false,
+					message: "UPI payment failed. Please verify your UPI ID and try again.",
 				});
 			}
 		}, 2000);

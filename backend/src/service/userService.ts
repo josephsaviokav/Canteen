@@ -1,4 +1,4 @@
-import { User } from "../models/index.js";
+import { User } from "../models/index";
 import bcrypt from "bcrypt";
 
 // Remove password from user object
@@ -55,6 +55,11 @@ const getAllUsers = async () => {
     const users = await User.findAll();
     return users.map(user => sanitizeUser(user));
 };
+
+const getAllCustomers = async () => {
+    const users = await User.findAll({ where: { role: 'customer' } });
+    return users.map(user => sanitizeUser(user));
+}
 
 // Get user by ID
 const getUserById = async (userId: string) => {
@@ -149,6 +154,7 @@ export default {
     createUser,
     signIn,
     getAllUsers,
+    getAllCustomers,
     getUserById,
     getUserByEmail,
     updateUser,

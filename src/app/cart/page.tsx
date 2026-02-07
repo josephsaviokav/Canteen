@@ -8,10 +8,10 @@ import Header from "@/components/Header";
 
 export default function CartPage() {
 	const router = useRouter();
-	const { cart, removeFromCart, clearCart } = useCart();
+	const { cart, removeFromCart, clearCart, updateCartItem } = useCart();
 
 	// Calculate total price directly
-	const totalPrice = cart.reduce((sum, item) => sum + item.price, 0);
+	const totalPrice = cart.reduce((sum, cartItem) => sum + (cartItem.item.price * cartItem.quantity), 0);
 
 	if (cart.length === 0) {
 		return (
@@ -47,8 +47,9 @@ export default function CartPage() {
 									className="flex justify-between items-center p-4 border-b last:border-b-0"
 								>
 									<div>
-										<h3 className="font-semibold text-gray-900">{item.name}</h3>
-										<p className="text-gray-600">₹{item.price}</p>
+										<h3 className="font-semibold text-gray-900">{item.item.name}</h3>
+										<p className="text-gray-600">₹{item.item.price}</p>
+										<p className="text-gray-600">Quantity: {item.quantity}</p>
 									</div>
 									<button
 										onClick={() => removeFromCart(item.id)}
@@ -69,7 +70,7 @@ export default function CartPage() {
 						<div className="space-y-2 mb-4">
 							<div className="flex justify-between text-gray-700">
 								<span>Subtotal:</span>
-								<span>₹{totalPrice}</span>
+							<span>₹{totalPrice.toFixed(2)}</span>
 							</div>
 							<div className="flex justify-between text-gray-700">
 								<span>Items:</span>
@@ -79,7 +80,7 @@ export default function CartPage() {
 						<div className="border-t pt-4 mb-6">
 							<div className="flex justify-between text-lg font-bold text-gray-900">
 								<span>Total:</span>
-								<span>₹{totalPrice}</span>
+								<span>₹{totalPrice.toFixed(2)}</span>
 							</div>
 						</div>
 						<button

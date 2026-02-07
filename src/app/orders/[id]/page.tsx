@@ -9,12 +9,29 @@ export default function OrderDetailsPage() {
 	const router = useRouter();
 	const params = useParams();
 	const searchParams = useSearchParams();
-	const { getOrderById, updateOrderStatus } = useOrder();
+	const { getOrderById, cancelOrder } = useOrder();
 	const { getPaymentByOrderId } = usePayment();
 	const orderId = params.id as string;
 	const order = getOrderById(orderId);
 	const payment = order ? getPaymentByOrderId(order.id) : undefined;
 	const paymentSuccess = searchParams.get("payment") === "success";
+
+	const canCancel = (order: any) => {
+		return order.status === "pending";
+	};
+
+	const handleCancelOrder = async () => {
+		if (!order) return;
+		
+		if (confirm("Are you sure you want to cancel this order?")) {
+			try {
+				await cancelOrder(order.id);
+				alert("Order cancelled successfully!");
+			} catch (error) {
+				alert("Failed to cancel order. Please try again.");
+			}
+		}
+	};
 
 	const downloadReceipt = () => {
 		if (!order) return;
@@ -67,7 +84,7 @@ Thank you for your order!
 				<main className="max-w-2xl mx-auto px-4 py-8">
 					<p className="text-center text-gray-600">Order not found</p>
 					<button
-						onClick={() => router.push("/orders")}
+						onClick={() => router.push("/user/orders")}
 						className="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg"
 					>
 						Back to Orders
@@ -103,7 +120,7 @@ Thank you for your order!
 						<div>
 							<p className="text-sm text-gray-600">Payment</p>
 							<p className="font-semibold text-gray-900 capitalize">
-								{order.paymentStatus}
+								{order.status}
 							</p>
 						</div>
 						<div>
@@ -162,7 +179,7 @@ Thank you for your order!
 
 					<div className="mt-8 flex gap-2 flex-wrap">
 						<button
-							onClick={() => router.push("/orders")}
+							onClick={() => router.push("/user/orders")}
 							className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 rounded-lg"
 						>
 							Back to Orders
@@ -171,17 +188,47 @@ Thank you for your order!
 							onClick={downloadReceipt}
 							className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-lg"
 						>
-						Download Receipt
-					</button>
-					{order.status !== "canceled" && order.status !== "delivered" && (
-						<button
-							onClick={() => updateOrderStatus(order.id, "canceled")}
-							className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg"
+							Download Receipt
+						</button>
+						{canCancel(order) && (
+							<button
+								onClick={handleCancelOrder}
+								className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg"
 							>
 								Cancel Order
 							</button>
 						)}
 					</div>
+
+					{/* Cancellation Information */}
+					{order.status === "pending" ? (
+						<div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+							<p className="text-sm text-yellow-800 flex items-center">
+								<svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+									<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+								</svg>
+								You can cancel this order anytime before it's completed
+							</p>
+						</div>
+					) : order.status === "canceled" ? (
+						<div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-3">
+							<p className="text-sm text-red-800 flex items-center">
+								<svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+									<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+								</svg>
+								This order has been cancelled
+							</p>
+						</div>
+					) : order.status === "completed" ? (
+						<div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-3">
+							<p className="text-sm text-green-800 flex items-center">
+								<svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+									<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+								</svg>
+								This order has been completed
+							</p>
+						</div>
+					) : null}
 				</div>
 			</main>
 		</div>
