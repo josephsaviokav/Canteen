@@ -15,9 +15,7 @@ export default function UserOrdersPage() {
   }, [user]);
 
   const canCancel = (order: any) => {
-    const created = new Date(order.createdAt).getTime();
-    const now = Date.now();
-    return order.status === "pending" && now - created <= 5 * 60 * 1000;
+    return order.status === "pending";
   };
 
   const handleCancelOrder = async (orderId: string) => {
@@ -136,12 +134,13 @@ export default function UserOrdersPage() {
               </div>
             </div>
 
-            {canCancel(order) && (
-              <p className="text-xs text-gray-500 mt-3 flex items-center">
+            {/* Cancellation Status Messages */}
+            {order.status === "pending" && (
+              <p className="text-xs text-yellow-700 mt-3 flex items-center bg-yellow-50 p-2 rounded">
                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                 </svg>
-                You can cancel this order within 5 minutes of placing it
+                You can cancel this order anytime before it's completed
               </p>
             )}
           </div>

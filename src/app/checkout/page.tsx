@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
@@ -15,7 +15,7 @@ type PaymentMethod = "card" | "upi";
 export default function CheckoutPage() {
 	const router = useRouter();
 	const { user } = useAuth();
-	const { cart, clearCart } = useCart();
+	const { cart, clearCart, refreshCart } = useCart();
 	const { currentOrderItems, currentOrderTotal, checkout, updateOrderStatus } = useOrder();
 	const { addPayment } = usePayment();
 	const [loading, setLoading] = useState(false);
@@ -23,6 +23,27 @@ export default function CheckoutPage() {
 	const [paymentAttempts, setPaymentAttempts] = useState(0);
 	const [showTestCards, setShowTestCards] = useState(false);
 	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card");
+	const [cartLoading, setCartLoading] = useState(true);
+
+	// Refresh cart when component mounts to ensure we have latest data
+	useEffect(() => {
+		const loadCart = async () => {
+			try {
+				setCartLoading(true);
+				await refreshCart();
+			} catch (error) {
+				console.error("Failed to load cart:", error);
+			} finally {
+				setCartLoading(false);
+			}
+		};
+		
+		if (user) {
+			loadCart();
+		} else {
+			setCartLoading(false);
+		}
+	}, [user]);
 
 	const [paymentDetails, setPaymentDetails] = useState<PaymentDetails>({
 		cardNumber: "",
@@ -110,6 +131,18 @@ export default function CheckoutPage() {
 			setLoading(false);
 		}
 	};
+
+	// Show loading state while cart is being fetched
+	if (cartLoading) {
+		return (
+			<div className="min-h-screen bg-gray-50">
+				<Header />
+				<main className="max-w-2xl mx-auto px-4 py-8">
+					<p className="text-center text-gray-600">Loading cart...</p>
+				</main>
+			</div>
+		);
+	}
 
 	if (cart.length === 0) {
 		return (

@@ -12,7 +12,8 @@ const PORT = process.env.PORT || 5000;
 const runMigrations = async () => {
     try {
         console.log('🔄 Running pending migrations...');
-        const { stdout, stderr } = await execPromise('npx sequelize-cli db:migrate');
+        const env = process.env.NODE_ENV || 'development';
+        const { stdout, stderr } = await execPromise(`npx sequelize-cli db:migrate --env ${env}`);
         if (stdout) console.log(stdout);
         if (stderr) console.error(stderr);
         console.log('✅ Migrations completed.');

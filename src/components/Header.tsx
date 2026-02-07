@@ -88,7 +88,7 @@ export default function Header() {
                 <div className="absolute right-0 mt-2 w-44 bg-white border rounded shadow-md">
                   <button
                     onClick={() => goTo("/user/dashboard")}
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
                   >
                     Dashboard
                   </button>
