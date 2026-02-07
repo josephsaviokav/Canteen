@@ -43,6 +43,11 @@ export default function LoginPage() {
           login(data.data.user, data.data.token);
 
           // Redirect to the page came from or home
+          var role = data.data.user.role;
+          if(role === "admin"){
+            router.push("/admin/dashboard");
+            return;
+          }
           const previous = sessionStorage.getItem("redirectAfterLogin");
           sessionStorage.removeItem("redirectAfterLogin"); // Clean up
           router.push(previous || "/");

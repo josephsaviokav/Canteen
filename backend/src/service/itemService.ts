@@ -23,7 +23,9 @@ const createItem = async (data: CreateItemInput) => {
 };
 
 const getAllItems = async () => {
-  return await Item.findAll();
+  return await Item.findAll({
+    order: [['createdAt', 'ASC']]
+  });
 };
 
 const getItemById = async (id: string) => {

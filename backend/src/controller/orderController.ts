@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Order, OrderItem, Cart, Item } from '../models/index';
+import { Order, OrderItem, Cart, Item, User } from '../models/index';
 
 // CREATE ORDER FROM CART - Checkout function
 const createOrderFromCart = async (req: Request, res: Response) => {
@@ -63,15 +63,40 @@ const createOrderFromCart = async (req: Request, res: Response) => {
         as: 'orderItems',
         include: [{
           model: Item,
-          as: 'item'
+          as: 'item',
+          attributes: ['id', 'name', 'price', 'imageUrl']
         }]
       }]
     });
 
+    // Transform the data to match frontend expectations
+    const orderData = (createdOrder as any).toJSON();
+    const transformedOrder = {
+      ...orderData,
+      items: orderData.orderItems?.map((oi: any) => {
+        if (!oi.item) {
+          return {
+            id: oi.itemId,
+            name: 'Unknown Item',
+            price: oi.price,
+            quantity: oi.quantity,
+            imageUrl: null
+          };
+        }
+        return {
+          id: oi.item.id,
+          name: oi.item.name,
+          price: oi.price,
+          quantity: oi.quantity,
+          imageUrl: oi.item.imageUrl
+        };
+      }) || []
+    };
+
     res.status(201).json({
       success: true,
       message: 'Order created successfully',
-      data: createdOrder,
+      data: transformedOrder,
     });
   } catch (error: any) {
     console.error('Create Order From Cart Error:', error);
@@ -119,13 +144,58 @@ const createOrder = async (req: Request, res: Response) => {
 // READ - Get all orders
 const getAllOrders = async (req: Request, res: Response) => {
   try {
+    console.log('Fetching all orders...');
     const orders = await Order.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'role']
+        },
+        {
+          model: OrderItem,
+          as: 'orderItems',
+          include: [{
+            model: Item,
+            as: 'item',
+            attributes: ['id', 'name', 'price', 'imageUrl']
+          }]
+        }
+      ],
       order: [['createdAt', 'DESC']],
+    });
+
+    console.log(`Found ${orders.length} orders`);
+
+    // Transform the data to match frontend expectations
+    const transformedOrders = orders.map((order: any) => {
+      const orderData = order.toJSON();
+      return {
+        ...orderData,
+        items: orderData.orderItems?.map((oi: any) => {
+          if (!oi.item) {
+            return {
+              id: oi.itemId,
+              name: 'Unknown Item',
+              price: oi.price,
+              quantity: oi.quantity,
+              imageUrl: null
+            };
+          }
+          return {
+            id: oi.item.id,
+            name: oi.item.name,
+            price: oi.price,
+            quantity: oi.quantity,
+            imageUrl: oi.item.imageUrl
+          };
+        }) || []
+      };
     });
 
     res.status(200).json({
       success: true,
-      data: orders,
+      data: transformedOrders,
       count: orders.length,
     });
   } catch (error: any) {
@@ -143,7 +213,17 @@ const getOrderById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const order = await Order.findByPk(id);
+    const order = await Order.findByPk(id, {
+      include: [{
+        model: OrderItem,
+        as: 'orderItems',
+        include: [{
+          model: Item,
+          as: 'item',
+          attributes: ['id', 'name', 'price', 'imageUrl']
+        }]
+      }]
+    });
 
     if (!order) {
       return res.status(404).json({
@@ -152,9 +232,33 @@ const getOrderById = async (req: Request, res: Response) => {
       });
     }
 
+    // Transform the data to match frontend expectations
+    const orderData = (order as any).toJSON();
+    const transformedOrder = {
+      ...orderData,
+      items: orderData.orderItems?.map((oi: any) => {
+        if (!oi.item) {
+          return {
+            id: oi.itemId,
+            name: 'Unknown Item',
+            price: oi.price,
+            quantity: oi.quantity,
+            imageUrl: null
+          };
+        }
+        return {
+          id: oi.item.id,
+          name: oi.item.name,
+          price: oi.price,
+          quantity: oi.quantity,
+          imageUrl: oi.item.imageUrl
+        };
+      }) || []
+    };
+
     res.status(200).json({
       success: true,
-      data: order,
+      data: transformedOrder,
     });
   } catch (error: any) {
     console.error('Get Order Error:', error);
@@ -173,12 +277,47 @@ const getOrdersByUserId = async (req: Request, res: Response) => {
 
     const orders = await Order.findAll({
       where: { userId },
+      include: [{
+        model: OrderItem,
+        as: 'orderItems',
+        include: [{
+          model: Item,
+          as: 'item',
+          attributes: ['id', 'name', 'price', 'imageUrl']
+        }]
+      }],
       order: [['createdAt', 'DESC']],
+    });
+
+    // Transform the data to match frontend expectations
+    const transformedOrders = orders.map((order: any) => {
+      const orderData = order.toJSON();
+      return {
+        ...orderData,
+        items: orderData.orderItems?.map((oi: any) => {
+          if (!oi.item) {
+            return {
+              id: oi.itemId,
+              name: 'Unknown Item',
+              price: oi.price,
+              quantity: oi.quantity,
+              imageUrl: null
+            };
+          }
+          return {
+            id: oi.item.id,
+            name: oi.item.name,
+            price: oi.price,
+            quantity: oi.quantity,
+            imageUrl: oi.item.imageUrl
+          };
+        }) || []
+      };
     });
 
     res.status(200).json({
       success: true,
-      data: orders,
+      data: transformedOrders,
       count: orders.length,
     });
   } catch (error: any) {

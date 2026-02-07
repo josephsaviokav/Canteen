@@ -10,9 +10,14 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
 
   useEffect(() => {
     if (!loading) {
@@ -28,7 +33,7 @@ export default function AdminLayout({
     return <div className="p-8">Loading...</div>;
   }
 
-  if (!user || user.role !== "Admin") {
+  if (!user || user.role !== "admin") {
     return null;
   }
 
@@ -41,11 +46,20 @@ export default function AdminLayout({
             <p className="text-sm text-gray-500">Logged in as {user.email}</p>
           </div>
 
-          <nav className="flex gap-6">
-            <AdminTab href="/admin/dashboard" label="Dashboard" />
-            <AdminTab href="/admin/orders" label="Orders" />
-            <AdminTab href="/admin/inventory" label="Inventory" />
-          </nav>
+          <div className="flex items-center gap-6">
+            <nav className="flex gap-6">
+              <AdminTab href="/admin/dashboard" label="Dashboard" />
+              <AdminTab href="/admin/orders" label="Orders" />
+              <AdminTab href="/admin/inventory" label="Inventory" />
+            </nav>
+            
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </div>
       <main className="max-w-7xl mx-auto px-6 py-8">{children}</main>

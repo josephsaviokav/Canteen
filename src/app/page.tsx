@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/Header"; 
 import { useState, useEffect } from "react";
 import { itemsApi } from "@/lib/api";
@@ -60,17 +61,34 @@ export interface itemType {
 export default function Home() {
 	const router = useRouter();
 	const { addToCart, cart } = useCart();
+	const { user, loading: authLoading } = useAuth();
 	const [menuItems, setMenuItems] = useState<itemType[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [quantities, setQuantities] = useState<Record<string, number>>({});
 	const [addedItems, setAddedItems] = useState<Record<string, boolean>>({});
 	const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
+	// Redirect admin users to their dashboard
+	useEffect(() => {
+		if (!authLoading && user && user.role === "admin") {
+			router.push("/admin/dashboard");
+		}
+	}, [user, authLoading, router]);
+
 	useEffect(() => {
 		const fetchItems = async () => {
 			try {
 				const data = await itemsApi.getAll();
 				setMenuItems(data);
+				
+				// Initialize quantities to 1 for all available items
+				const initialQuantities: Record<string, number> = {};
+				data.forEach((item: itemType) => {
+					if (item.available) {
+						initialQuantities[item.id] = 1;
+					}
+				});
+				setQuantities(initialQuantities);
 			} catch (error) {
 				console.error("Failed to fetch menu items:", error);
 			} finally {
@@ -172,7 +190,7 @@ export default function Home() {
 						return (
 							<div
 								key={item.id}
-								className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+								className={`bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 ${!item.available ? 'opacity-75' : ''}`}
 							>
 								<div className="relative h-48 bg-gradient-to-br from-gray-200 to-gray-300">
 									<Image
@@ -186,6 +204,13 @@ export default function Home() {
 											e.currentTarget.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23e5e7eb' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' font-size='18' fill='%239ca3af' text-anchor='middle' dominant-baseline='middle'%3EImage not available%3C/text%3E%3C/svg%3E";
 										}}
 									/>
+									{!item.available && (
+										<div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex items-center justify-center">
+											<span className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold text-lg">
+												NOT AVAILABLE
+											</span>
+										</div>
+									)}
 								</div>
 								<div className="p-4">
 									{/* <p className="text-xs text-green-600 font-semibold mb-1">
@@ -202,7 +227,7 @@ export default function Home() {
 									<div className="flex items-center gap-3 mb-3">
 										<button
 											onClick={() => handleQuantityChange(item.id, -1)}
-											disabled={quantity === 0}
+											disabled={quantity === 0 || !item.available}
 											className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
 										>
 											<svg
@@ -227,7 +252,8 @@ export default function Home() {
 
 										<button
 											onClick={() => handleQuantityChange(item.id, 1)}
-											className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+											disabled={!item.available}
+											className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 disabled:bg-gray-100 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
 										>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
@@ -249,9 +275,11 @@ export default function Home() {
 									{/* Add to Cart Button */}
 									<button
 										onClick={() => handleAddToCart(item)}
-										disabled={quantity === 0 && !isAdded}
+										disabled={(quantity === 0 && !isAdded) || !item.available}
 										className={`w-full ${
-											isAdded
+											!item.available
+												? "bg-gray-400 cursor-not-allowed"
+												: isAdded
 												? "bg-green-600"
 												: quantity === 0
 												? "bg-gray-300 cursor-not-allowed"

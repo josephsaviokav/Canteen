@@ -65,6 +65,8 @@ userRouter.post('/signin', userController.signIn);
  */
 userRouter.get('/', auth, isAdmin, userController.getAllUsers);
 
+userRouter.get('/customers', auth, isAdmin, userController.getAllCustomers);
+
 /**
  * @swagger
  * /api/v1/users/{id}:

@@ -69,9 +69,15 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 
 		try {
 			setLoading(true);
-			const response = await ordersApi.getAll();
+			// Fetch orders for the current user only
+			const response = await ordersApi.getByUserId(user.id!);
 			if (response.success) {
-				setOrders(response.data);
+				// Ensure each order has an items array
+				const ordersWithItems = response.data.map((order: any) => ({
+					...order,
+					items: order.items || []
+				}));
+				setOrders(ordersWithItems);
 			}
 		} catch (error) {
 			console.error("Failed to load orders:", error);
@@ -87,7 +93,10 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 			setLoading(true);
 			const response = await ordersApi.checkout(userId);
 			if (response.success) {
-				const newOrder = response.data;
+				const newOrder = {
+					...response.data,
+					items: response.data.items || []
+				};
 				setOrders((prev) => [newOrder, ...prev]);
 				// Cart will be cleared by the backend
 				return newOrder;
@@ -105,7 +114,10 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 		try {
 			const response = await ordersApi.create(userId, totalAmount, items);
 			if (response.success) {
-				const newOrder = response.data;
+				const newOrder = {
+					...response.data,
+					items: response.data.items || []
+				};
 				setOrders((prev) => [newOrder, ...prev]);
 				return newOrder;
 			}

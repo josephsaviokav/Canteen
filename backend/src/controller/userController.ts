@@ -85,6 +85,20 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+const getAllCustomers = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const customers = await userService.getAllCustomers();  
+
+        res.status(200).json({
+            success: true,
+            message: 'Customers retrieved successfully',
+            data: customers
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // Get user by ID
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -198,6 +212,7 @@ export default {
     signUp,
     signIn,
     getAllUsers,
+    getAllCustomers,
     getUserById,
     updateUser,
     updatePassword,

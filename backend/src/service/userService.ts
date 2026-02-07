@@ -56,6 +56,11 @@ const getAllUsers = async () => {
     return users.map(user => sanitizeUser(user));
 };
 
+const getAllCustomers = async () => {
+    const users = await User.findAll({ where: { role: 'customer' } });
+    return users.map(user => sanitizeUser(user));
+}
+
 // Get user by ID
 const getUserById = async (userId: string) => {
     const user = await User.findByPk(userId);
@@ -149,6 +154,7 @@ export default {
     createUser,
     signIn,
     getAllUsers,
+    getAllCustomers,
     getUserById,
     getUserByEmail,
     updateUser,

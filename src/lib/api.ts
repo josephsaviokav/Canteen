@@ -95,6 +95,38 @@ export const usersApi = {
       throw error;
     }
   },
+
+  // Get all users
+  getAll: async () => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/users`);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      return response.json();
+    } catch (error) {
+      console.error('Get all users API Error:', error);
+      throw error;
+    }
+  },
+
+  // Get all customers (users with role 'customer')
+  getAllCustomers: async () => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/users/customers`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    } catch (error) {
+      console.error('Get all customers API Error:', error);
+      throw error;
+    }
+  }
 };
 
 // Orders API
@@ -228,6 +260,32 @@ export const itemsApi = {
     const response = await fetch(`${API_BASE_URL}/items`);
     const json = await response.json();
     return json.data; // Extract the data array from the response
+  },
+
+  // Update item (Admin only)
+  update: async (id: string, data: { 
+    name?: string; 
+    price?: number; 
+    available?: boolean; 
+    imageUrl?: string;
+  }) => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/items/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      return response.json();
+    } catch (error) {
+      console.error('Update item API Error:', error);
+      throw error;
+    }
   }
 }
 
