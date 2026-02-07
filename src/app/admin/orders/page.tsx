@@ -56,7 +56,7 @@ export default function AdminOrdersPage() {
       setOrders(ordersData);
       setUsers(usersData);
       setError("");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading data:", err);
       setError(err.message || "Failed to load data");
     } finally {
@@ -71,8 +71,8 @@ export default function AdminOrdersPage() {
       setOrders(prev => prev.map(o => 
         o.id === id ? { ...o, status, updatedAt: new Date().toISOString() } : o
       ));
-    } catch (err: any) {
-      alert(err.message || "Failed to update order status");
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Failed to update order status");
     }
   };
 
@@ -113,8 +113,8 @@ export default function AdminOrdersPage() {
 
       closeModal();
       alert("Order updated successfully!");
-    } catch (err: any) {
-      alert(err.message || "Failed to update order");
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Failed to update order");
     }
   };
 

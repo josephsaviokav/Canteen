@@ -2,11 +2,12 @@ require('dotenv').config();
 
 const config = {
   "development": {
+    "dialect": process.env.DB_DIALECT || "sqlite",
+    "storage": process.env.DB_STORAGE || "./database.sqlite",
     "username": process.env.DB_USERNAME || "postgres",
     "password": process.env.DB_PASSWORD || "postgres",
     "database": process.env.DB_NAME || "canteen",
-    "host": process.env.DB_HOST || "127.0.0.1",
-    "dialect": "postgres"
+    "host": process.env.DB_HOST || "127.0.0.1"
   },
   "test": {
     "username": process.env.DB_USERNAME || "postgres",

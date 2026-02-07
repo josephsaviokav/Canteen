@@ -1,5 +1,3 @@
-import { get } from "http";
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 // Helper function to handle API calls with token validation
@@ -153,7 +151,7 @@ export const ordersApi = {
   },
 
   // Create new order
-  create: async (userId: string, totalAmount: number, items: any[]) => {
+  create: async (userId: string, totalAmount: number, items: { id: string; quantity: number }[]) => {
     try {
       const response = await fetch(`${API_BASE_URL}/orders`, {
         method: 'POST',
@@ -228,7 +226,7 @@ export const ordersApi = {
 // Payments API
 export const paymentsApi = {
   // Process payment
-  process: async (orderId: string, amount: number, cardDetails: any) => {
+  process: async (orderId: string, amount: number, cardDetails: Record<string, unknown>) => {
     const response = await fetch(`${API_BASE_URL}/payments/process`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

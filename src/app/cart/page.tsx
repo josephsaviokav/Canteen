@@ -1,14 +1,12 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/contexts/CartContext";
 import Header from "@/components/Header";
 
 export default function CartPage() {
 	const router = useRouter();
-	const { cart, removeFromCart, clearCart, updateCartItem } = useCart();
+	const { cart, removeFromCart, clearCart } = useCart();
 
 	// Calculate total price directly
 	const totalPrice = cart.reduce((sum, cartItem) => sum + (cartItem.item.price * cartItem.quantity), 0);

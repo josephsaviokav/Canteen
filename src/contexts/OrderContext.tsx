@@ -73,7 +73,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
 			const response = await ordersApi.getByUserId(user.id!);
 			if (response.success) {
 				// Ensure each order has an items array
-				const ordersWithItems = response.data.map((order: any) => ({
+				const ordersWithItems = response.data.map((order: Order) => ({
 					...order,
 					items: order.items || []
 				}));

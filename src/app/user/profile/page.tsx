@@ -6,12 +6,12 @@ import { useState } from "react";
 export default function UserProfilePage() {
   const { user, login } = useAuth();
 
-  if (!user) return null;
-
-  const [firstName, setFirstName] = useState(user.firstName || "");
-  const [lastName, setLastName] = useState(user.lastName || "");
-  const [phone, setPhone] = useState(user.phone || "");
+  const [firstName, setFirstName] = useState(user?.firstName || "");
+  const [lastName, setLastName] = useState(user?.lastName || "");
+  const [phone, setPhone] = useState(user?.phone || "");
   const [saving, setSaving] = useState(false);
+
+  if (!user) return null;
 
   const handleSave = () => {
     setSaving(true);

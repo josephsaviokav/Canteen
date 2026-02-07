@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { itemsApi } from "@/lib/api";
 
 type InventoryItem = {
@@ -25,8 +26,8 @@ export default function AdminInventoryPage() {
       const items = await itemsApi.getAll();
       setInventory(items);
       setError("");
-    } catch (err: any) {
-      setError(err.message || "Failed to load items");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to load items");
       console.error("Error loading items:", err);
     } finally {
       setLoading(false);
@@ -45,8 +46,8 @@ export default function AdminInventoryPage() {
         setInventory(prev => prev.map(item => 
           item.id === id ? { ...item, available: !currentStatus } : item
         ));
-      } catch (err: any) {
-        alert(err.message || "Failed to update availability");
+      } catch (err: unknown) {
+        alert(err instanceof Error ? err.message : "Failed to update availability");
       }
     }
   };
@@ -70,8 +71,8 @@ export default function AdminInventoryPage() {
       setInventory(prev => prev.map(item => 
         item.id === id ? { ...item, price: newPrice } : item
       ));
-    } catch (err: any) {
-      alert(err.message || "Failed to update price");
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Failed to update price");
     }
   };
 
@@ -124,10 +125,12 @@ export default function AdminInventoryPage() {
                 <tr key={item.id} className="border-t">
                   <td className="px-4 py-3">
                     {item.imageUrl && (
-                      <img 
+                      <Image 
                         src={item.imageUrl} 
                         alt={item.name}
-                        className="w-16 h-16 object-cover rounded"
+                        width={64}
+                        height={64}
+                        className="object-cover rounded"
                       />
                     )}
                   </td>

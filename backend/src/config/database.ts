@@ -3,7 +3,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const sequelize = process.env.DATABASE_URL
+const sequelize = process.env.DB_DIALECT === 'sqlite'
+  ? new Sequelize({
+      dialect: 'sqlite',
+      storage: process.env.DB_STORAGE || './database.sqlite',
+      logging: console.log,
+    })
+  : process.env.DATABASE_URL
   ? new Sequelize(process.env.DATABASE_URL, {
       dialect: 'postgres',
       logging: console.log,

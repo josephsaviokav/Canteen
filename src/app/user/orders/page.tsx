@@ -3,6 +3,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useOrder } from "@/contexts/OrderContext";
 import { useEffect } from "react";
+import Link from "next/link";
 
 export default function UserOrdersPage() {
   const { user } = useAuth();
@@ -14,7 +15,7 @@ export default function UserOrdersPage() {
     }
   }, [user]);
 
-  const canCancel = (order: any) => {
+  const canCancel = (order: { status: string }) => {
     return order.status === "pending";
   };
 
@@ -59,9 +60,9 @@ export default function UserOrdersPage() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
           <p className="text-gray-600">No orders found.</p>
-          <a href="/" className="inline-block mt-4 text-green-600 hover:text-green-700 font-medium">
+          <Link href="/" className="inline-block mt-4 text-green-600 hover:text-green-700 font-medium">
             Start Shopping →
-          </a>
+          </Link>
         </div>
       )}
 
@@ -140,7 +141,7 @@ export default function UserOrdersPage() {
                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                 </svg>
-                You can cancel this order anytime before it's completed
+                You can cancel this order anytime before it&apos;s completed
               </p>
             )}
           </div>

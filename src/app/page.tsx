@@ -66,7 +66,6 @@ export default function Home() {
 	const [loading, setLoading] = useState(true);
 	const [quantities, setQuantities] = useState<Record<string, number>>({});
 	const [addedItems, setAddedItems] = useState<Record<string, boolean>>({});
-	const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
 	// Redirect admin users to their dashboard
 	useEffect(() => {

@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { usersApi } from "@/lib/api";
 
 export default function LoginPage() {
@@ -43,7 +43,7 @@ export default function LoginPage() {
           login(data.data.user, data.data.token);
 
           // Redirect to the page came from or home
-          var role = data.data.user.role;
+          const role = data.data.user.role;
           if(role === "admin"){
             router.push("/admin/dashboard");
             return;
@@ -129,7 +129,7 @@ export default function LoginPage() {
             </form>
 
             <p className="text-sm text-gray-600 mt-4 text-center">
-              Don’t have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href="/signup"
                 className="text-green-600 font-medium hover:underline"
