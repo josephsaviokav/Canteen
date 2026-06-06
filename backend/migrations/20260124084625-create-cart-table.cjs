@@ -10,7 +10,7 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
     await queryInterface.createTable('carts', {
-      id: {
+      cartId: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
@@ -21,25 +21,10 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'users',
-          key: 'id'
+          key: 'userId'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
-      },
-      itemId: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        references: {
-          model: 'items',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
-      },
-      quantity: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        defaultValue: 1
       },
       createdAt: {
         allowNull: false,

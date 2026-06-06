@@ -10,7 +10,7 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
     await queryInterface.createTable('orders', {
-      id: {
+      orderId: {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
@@ -21,7 +21,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'users',
-          key: 'id'
+          key: 'userId'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
@@ -30,10 +30,14 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false
       },
+      placedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
       status: {
-        type: Sequelize.ENUM('pending', 'completed', 'canceled'),
-        defaultValue: 'pending',
-        allowNull: false
+        type: Sequelize.ENUM('PENDING', 'CONFIRMED', 'CANCELLED'),
+        allowNull: false,
+        defaultValue: 'PENDING'
       },
       createdAt: {
         allowNull: false,

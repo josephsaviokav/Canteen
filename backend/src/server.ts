@@ -1,8 +1,10 @@
+import "../config/env";
 import dotenv from 'dotenv';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import app from './app.js';
 import sequelize from './config/database.js';
+import defineAssociations from './config/associations.js';
 
 dotenv.config();
 
@@ -25,6 +27,7 @@ const runMigrations = async () => {
 
 const startServer = async () => {
     try {
+        defineAssociations(); 
         // Test database connection
         await sequelize.authenticate();
         console.log('✅ Database connection established successfully.');

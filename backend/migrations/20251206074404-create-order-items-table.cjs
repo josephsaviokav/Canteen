@@ -9,8 +9,8 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable('orderItems', {
-      id: {
+    await queryInterface.createTable('order_items', {
+      orderItemId: {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
@@ -21,7 +21,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'orders',
-          key: 'id'
+          key: 'orderId'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
@@ -31,7 +31,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'items',
-          key: 'id'
+          key: 'itemId'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
@@ -40,7 +40,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      price : {
+      unitPrice : {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false
       },
@@ -66,6 +66,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable('orderItems');
+    await queryInterface.dropTable('order_items');
   }
 };

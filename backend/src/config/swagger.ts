@@ -8,6 +8,10 @@ const swaggerDefinition = {
     description: 'REST API for Canteen Management System',
     contact: {
       name: 'API Support',
+      email: 'support@canteen.com',
+    },
+    license: {
+      name: 'MIT',
     },
   },
   servers: [
@@ -16,9 +20,18 @@ const swaggerDefinition = {
       description: 'Development server',
     },
     {
-      url: 'https://your-production-url.com',
+      url: process.env.PRODUCTION_URL || 'https://your-production-url.com',
       description: 'Production server',
     },
+  ],
+  tags: [
+    { name: 'Auth', description: 'Authentication endpoints' },
+    { name: 'Users', description: 'User management' },
+    { name: 'Items', description: 'Item/Menu management' },
+    { name: 'Categories', description: 'Category management' },
+    { name: 'Cart', description: 'Shopping cart operations' },
+    { name: 'Orders', description: 'Order management' },
+    { name: 'Payments', description: 'Payment processing' },
   ],
   components: {
     securitySchemes: {
@@ -26,74 +39,139 @@ const swaggerDefinition = {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
+        description: 'JWT Bearer token authentication',
       },
     },
     schemas: {
       User: {
         type: 'object',
         properties: {
-          id: { type: 'integer' },
-          username: { type: 'string' },
-          email: { type: 'string' },
+          userId: { type: 'string', format: 'uuid' },
+          email: { type: 'string', format: 'email' },
+          firstName: { type: 'string' },
+          lastName: { type: 'string' },
           role: { type: 'string', enum: ['user', 'admin'] },
+          phone: { type: 'string' },
           createdAt: { type: 'string', format: 'date-time' },
           updatedAt: { type: 'string', format: 'date-time' },
         },
+        required: ['userId', 'email', 'role'],
       },
       Item: {
         type: 'object',
         properties: {
-          id: { type: 'integer' },
+          id: { type: 'string', format: 'uuid' },
           name: { type: 'string' },
           description: { type: 'string' },
-          price: { type: 'number' },
-          category: { type: 'string' },
-          imageUrl: { type: 'string' },
+          price: { type: 'number', format: 'decimal' },
+          categoryId: { type: 'string', format: 'uuid' },
+          imageUrl: { type: 'string', format: 'uri' },
           available: { type: 'boolean' },
           createdAt: { type: 'string', format: 'date-time' },
           updatedAt: { type: 'string', format: 'date-time' },
         },
+        required: ['id', 'name', 'price', 'categoryId'],
+      },
+      Category: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+          name: { type: 'string' },
+          description: { type: 'string' },
+          imageUrl: { type: 'string', format: 'uri' },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+        required: ['id', 'name'],
+      },
+      Cart: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+          userId: { type: 'string', format: 'uuid' },
+          items: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/CartItem' },
+          },
+          totalAmount: { type: 'number', format: 'decimal' },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+        required: ['id', 'userId'],
+      },
+      CartItem: {
+        type: 'object',
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+          cartId: { type: 'string', format: 'uuid' },
+          itemId: { type: 'string', format: 'uuid' },
+          quantity: { type: 'integer', minimum: 1 },
+          price: { type: 'number', format: 'decimal' },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' },
+        },
+        required: ['id', 'cartId', 'itemId', 'quantity', 'price'],
       },
       Order: {
         type: 'object',
         properties: {
-          id: { type: 'integer' },
-          userId: { type: 'integer' },
-          totalAmount: { type: 'number' },
-          status: { type: 'string', enum: ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'] },
+          id: { type: 'string', format: 'uuid' },
+          userId: { type: 'string', format: 'uuid' },
+          totalAmount: { type: 'number', format: 'decimal' },
+          status: {
+            type: 'string',
+            enum: ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'],
+          },
+          items: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/OrderItem' },
+          },
+          deliveryAddress: { type: 'string' },
+          notes: { type: 'string' },
           createdAt: { type: 'string', format: 'date-time' },
           updatedAt: { type: 'string', format: 'date-time' },
         },
+        required: ['id', 'userId', 'totalAmount', 'status'],
       },
       OrderItem: {
         type: 'object',
         properties: {
-          id: { type: 'integer' },
-          orderId: { type: 'integer' },
-          itemId: { type: 'integer' },
-          quantity: { type: 'integer' },
-          price: { type: 'number' },
+          id: { type: 'string', format: 'uuid' },
+          orderId: { type: 'string', format: 'uuid' },
+          itemId: { type: 'string', format: 'uuid' },
+          quantity: { type: 'integer', minimum: 1 },
+          price: { type: 'number', format: 'decimal' },
           createdAt: { type: 'string', format: 'date-time' },
           updatedAt: { type: 'string', format: 'date-time' },
         },
+        required: ['id', 'orderId', 'itemId', 'quantity', 'price'],
       },
       Payment: {
         type: 'object',
         properties: {
-          id: { type: 'integer' },
-          orderId: { type: 'integer' },
-          amount: { type: 'number' },
+          id: { type: 'string', format: 'uuid' },
+          orderId: { type: 'string', format: 'uuid' },
+          amount: { type: 'number', format: 'decimal' },
           status: { type: 'string', enum: ['pending', 'completed', 'failed'] },
-          paymentMethod: { type: 'string' },
+          paymentMethod: { type: 'string', enum: ['card', 'upi', 'netbanking'] },
           transactionId: { type: 'string' },
           createdAt: { type: 'string', format: 'date-time' },
           updatedAt: { type: 'string', format: 'date-time' },
         },
+        required: ['id', 'orderId', 'amount', 'status'],
       },
-      Error: {
+      ApiResponse: {
         type: 'object',
         properties: {
           success: { type: 'boolean' },
+          message: { type: 'string' },
+          data: { type: 'object' },
+        },
+      },
+      ErrorResponse: {
+        type: 'object',
+        properties: {
+          success: { type: 'boolean', example: false },
           message: { type: 'string' },
           error: { type: 'string' },
         },
@@ -109,8 +187,15 @@ const swaggerDefinition = {
 
 const options = {
   swaggerDefinition,
-  // Path to the API routes files
-  apis: ['./src/routes/*.ts', './src/controller/*.ts'],
+  apis: [
+    './src/modules/*/routes.ts',
+    './src/modules/user/*.ts',
+    './src/modules/item/*.ts',
+    './src/modules/category/*.ts',
+    './src/modules/cart/*.ts',
+    './src/modules/order/*.ts',
+    './src/modules/payment/*.ts',
+  ],
 };
 
 export const swaggerSpec = swaggerJSDoc(options);

@@ -1,20 +1,34 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger';
 
 // Routes
-import { userRouter, itemRoutes, orderRouter, paymentRouter, orderItemRoutes, cartRouter } from './routes/index';
+import {userRouter} from './modules/user';
+import {itemRouter} from './modules/item';
+import {orderRouter} from './modules/order';
+import {paymentRouter} from './modules/payment';
+import {orderItemRouter} from './modules/orderItem';
+import {cartRouter} from './modules/cart';
 
 // Middleware
-import { errorHandler } from './middleware/index';
+import { errorHandler, requestLogger, globalRateLimiter, notFoundHandler } from './middleware/index';
 
 const app = express();
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middleware - Security & Logging (before routes)
+app.use(helmet());
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS?.split(',') || 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+app.use(globalRateLimiter);
+app.use(requestLogger);
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -44,19 +58,14 @@ app.get('/', (req, res) => {
 
 // API Routes
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/items', itemRoutes);
+app.use('/api/v1/items', itemRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/payments', paymentRouter);
-app.use('/api/v1/order-items', orderItemRoutes);
+app.use('/api/v1/order-items', orderItemRouter);
 app.use('/api/v1/cart', cartRouter);
 
 // 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found',
-  });
-});
+app.use(notFoundHandler);
 
 // Global error handler
 app.use(errorHandler);

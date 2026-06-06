@@ -15,11 +15,11 @@ const sequelize = process.env.DATABASE_URL
       }
     })
   : new Sequelize({
-      database: process.env.DB_NAME || 'canteen',
-      username: process.env.DB_USERNAME || 'postgres',
-      password: process.env.DB_PASSWORD || 'postgres',
-      host: process.env.DB_HOST || '127.0.0.1',
-      port: Number(process.env.DB_PORT) || 5432,
+      database: process.env.DB_NAME,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
       dialect: 'postgres',
       logging: console.log,
     });

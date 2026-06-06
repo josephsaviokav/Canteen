@@ -59,3 +59,12 @@ export class ConflictError extends AppError {
         super(message, 409);
     }
 }
+
+/**
+ * 429 Too Many Requests Error
+ */
+export class TooManyRequestsError extends AppError {
+    constructor(message: string = 'Too many requests, please try again later') {
+        super(message, 429);
+    }
+}

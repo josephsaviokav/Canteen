@@ -1,23 +1,12 @@
 import type { Request, Response, NextFunction } from 'express';
+import { asyncHandler } from './errorHandler';
+import { ForbiddenError } from '../utils/errors';
 
-const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-    try {
-        // Check if user role is admin
-        if (req.user?.role !== 'admin') {
-            return res.status(403).json({
-                success: false,
-                message: 'Access denied. Admins only.'
-            });
-        }
-
-        // Continue to next middleware/controller
-        next();
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: 'Server error in admin check'
-        });
+const isAdmin = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    if (req.user?.role !== 'admin') {
+        throw new ForbiddenError('Access denied: Admins only');
     }
-}
+    next();
+});
 
 export default isAdmin;

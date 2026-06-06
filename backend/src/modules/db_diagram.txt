@@ -1,0 +1,34 @@
+user /
+userId (PK) | firstName | lastName | phone (UNIQUE) | email (UNIQUE) | password | role 
+
+category /
+categoryId (PK) | categoryName (UNIQUE) | categoryDescription 
+
+item /
+itemId (PK) | categoryId (FK) | itemName | description | price | imageUrl | stockQuantity | isAvailable
+
+cart /
+cartId (PK) | userId (FK)
+
+cart_item /
+cartItemId (PK) | cartId (FK) | itemId (FK) | quantity 
+
+order
+orderId (PK) | userId (FK) | totalAmount | placedAt | status (pending/confirmed/cancelled)
+
+order_item
+orderItemId (PK) | orderId (FK) | itemId (FK) | quantity | unitPrice | subtotal
+
+payment
+paymentId (PK) | orderId (FK, UNIQUE) | userId (FK) | paymentMethod (upi/card/cash/wallet) | amount | status (pending/success/failed)
+
+relationship
+users 1 --- 1 carts
+users 1 --- many orders
+users 1 --- many payments
+categories 1 --- many items
+carts 1 --- many cart_items
+orders 1 --- many order_items
+orders 1 --- 1 payments
+items 1 --- many cart_items
+items 1 --- many order_items 

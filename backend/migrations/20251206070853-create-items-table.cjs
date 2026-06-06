@@ -10,13 +10,21 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
     await queryInterface.createTable('items', {
-      id: {
+      itemId: {
         allowNull: false,
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
         type: Sequelize.UUID
       },
-      name: {
+      categoryId: {
+        type: Sequelize.UUID,
+        allowNull: false
+      },
+      itemName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      itemDescription: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -28,7 +36,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      available : {
+      stockQuantity : {
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      isAvailable : {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true
