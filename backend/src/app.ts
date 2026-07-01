@@ -14,6 +14,7 @@ import {cartRouter} from './modules/cart';
 
 // Middleware
 import { errorHandler, requestLogger, globalRateLimiter, notFoundHandler } from './middleware/index';
+import { categoryRouter } from './modules/category/index.js';
 
 const app = express();
 
@@ -63,6 +64,8 @@ app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/payments', paymentRouter);
 app.use('/api/v1/order-items', orderItemRouter);
 app.use('/api/v1/cart', cartRouter);
+app.use('/api/v1/cart-items', cartRouter);
+app.use('/api/v1/categories', categoryRouter);
 
 // 404 handler
 app.use(notFoundHandler);

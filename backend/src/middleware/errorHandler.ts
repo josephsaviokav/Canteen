@@ -4,7 +4,7 @@ import {
     UniqueConstraintError,
     ValidationError as SequelizeValidationError,
 } from 'sequelize';
-import { AppError, NotFoundError } from '../utils/errors';
+import { AppError, NotFoundError } from '../utils/errors.js';
 
 type AsyncHandler = (
     req: Request,

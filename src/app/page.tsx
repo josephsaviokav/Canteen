@@ -123,14 +123,15 @@ export default function Home() {
 		try {
 			// Get userId from localStorage
 			const userString = localStorage.getItem("user");
+			console.log("User from localStorage:", userString);
 			if (!userString) {
 				router.push("/login");
 				return;
 			}
 			const user = JSON.parse(userString);
 
-			// Call addToCart with correct parameters
-			await addToCart(user.id, item.id, quantity);
+			// Call addToCart with the authenticated user id
+			await addToCart(user.id ?? user.userId, item.id, quantity);
 
 			// Reset quantity and show success feedback
 			setQuantities((prev) => ({ ...prev, [item.id]: 0 }));

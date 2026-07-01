@@ -29,7 +29,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('categories', {
-      category_name: categories.map(c => c.name)
+      categoryName: categories.map(c => c.name)
     });
   }
 };

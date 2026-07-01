@@ -31,7 +31,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('carts', { user_id: adminId });
+    await queryInterface.bulkDelete('carts', { userId: adminId });
     await queryInterface.bulkDelete('users', { email: 'admin@canteen.com' });
   }
 };

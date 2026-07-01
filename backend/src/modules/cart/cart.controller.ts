@@ -9,6 +9,7 @@ import Cart from './cart.entity';
 // create cart
 const createCart = asyncHandler(async (req: Request, res: Response) => {
     const payload = validate(createCartSchema, req.body);
+    console.log('Creating cart with payload:', payload);
     const cart = await cartService.createCart(payload);
 
     res.status(201).json({

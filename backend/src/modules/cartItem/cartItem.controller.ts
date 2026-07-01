@@ -8,7 +8,9 @@ import CartItem from './cartItem.entity';
 
 // create cart item
 const createCartItem = asyncHandler(async (req: Request, res: Response) => {
+    console.log('Received request to create cart item with body:', req.body);
     const payload = validate(createCartItemSchema, req.body);
+    // console.log('Creating cart item with payload:', payload);
     const cartItem = await cartItemService.createCartItem(payload);
 
     res.status(201).json({

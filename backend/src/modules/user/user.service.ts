@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import User from "./user.entity";
+import User from "./user.entity.js";
 import type {
     CreateUserDTO,
     ForgotPasswordDTO,
@@ -8,11 +8,11 @@ import type {
     UpdatePasswordDTO,
     UpdateUserDTO,
     UserDTO,
-} from "./user.dto";
-import userRepository from "./user.repository";
-import type { PaginationOptions, PaginatedResult } from "../../utils/pagination";
-import cartRepository from "../cart/cart.repository";
-import sequelize from "../../config/database";
+} from "./user.dto.js";
+import userRepository from "./user.repository.js";
+import type { PaginationOptions, PaginatedResult } from "../../utils/pagination.js";
+import cartRepository from "../cart/cart.repository.js";
+import sequelize from "../../config/database.js";
 
 dotenv.config();
 
