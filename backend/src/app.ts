@@ -2,18 +2,18 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
-import { swaggerSpec } from './config/swagger';
+import { swaggerSpec } from './config/swagger.js';
 
 // Routes
-import {userRouter} from './modules/user';
-import {itemRouter} from './modules/item';
-import {orderRouter} from './modules/order';
-import {paymentRouter} from './modules/payment';
-import {orderItemRouter} from './modules/orderItem';
-import {cartRouter} from './modules/cart';
+import userRouter from './modules/user/user.routes.js';
+import itemRouter from './modules/item/item.routes.js';
+import orderRouter from './modules/order/order.routes.js';
+import paymentRouter from './modules/payment/payment.routes.js';
+import orderItemRouter from './modules/orderItem/orderItem.routes.js';
+import cartRouter from './modules/cart/cart.routes.js';
 
 // Middleware
-import { errorHandler, requestLogger, globalRateLimiter, notFoundHandler } from './middleware/index';
+import { errorHandler, requestLogger, globalRateLimiter, notFoundHandler } from './middleware/index.js';
 import { categoryRouter } from './modules/category/index.js';
 
 const app = express();
