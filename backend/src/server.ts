@@ -1,4 +1,4 @@
-import "./config/env";
+import "./config/env.js";
 import dotenv from 'dotenv';
 import { exec } from 'child_process';
 import { promisify } from 'util';
