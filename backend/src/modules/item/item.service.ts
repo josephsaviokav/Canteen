@@ -1,11 +1,11 @@
-import Item from './item.entity';
-import { NotFoundError } from '../../utils/errors';
+import Item from './item.entity.js';
+import { NotFoundError } from '../../utils/errors.js';
 import type { CreateItemDto,
   UpdateItemDto,
   ItemDto
- } from './item.dto';
-import ItemRepository from './item.repository';
-import { PaginationOptions, PaginatedResult } from '../../utils/pagination';
+ } from './item.dto.js';
+import ItemRepository from './item.repository.js';
+import { PaginationOptions, PaginatedResult } from '../../utils/pagination.js';
 
 const toItemDto = (item: Item): ItemDto => item.toJSON() as ItemDto;
 

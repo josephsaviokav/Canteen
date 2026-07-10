@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { TooManyRequestsError } from '../utils/errors';
+import { TooManyRequestsError } from '../utils/errors.js';
 
 interface RateLimitConfig {
     windowMs: number; // Time window in milliseconds
@@ -64,7 +64,7 @@ export const createRateLimiter = (config: RateLimitConfig) => {
  */
 export const globalRateLimiter = createRateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    maxRequests: 100,
+    maxRequests: 1000,
 });
 
 /**
@@ -72,5 +72,5 @@ export const globalRateLimiter = createRateLimiter({
  */
 export const authRateLimiter = createRateLimiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    maxRequests: 5,
+    maxRequests: 500,
 });

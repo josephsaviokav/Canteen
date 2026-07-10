@@ -1,11 +1,11 @@
-import User from '../modules/user/user.entity';
-import Order from '../modules/order/order.entity';
-import OrderItem from '../modules/orderItem/orderItem.entity';
-import Cart from '../modules/cart/cart.entity';
-import CartItem from '../modules/cartItem/cartItem.entity';
-import Item from '../modules/item/item.entity';
-import Category from '../modules/category/category.entity';
-import Payment from '../modules/payment/payment.entity';
+import User from '../modules/user/user.entity.js';
+import Order from '../modules/order/order.entity.js';
+import OrderItem from '../modules/orderItem/orderItem.entity.js';
+import Cart from '../modules/cart/cart.entity.js';
+import CartItem from '../modules/cartItem/cartItem.entity.js';
+import Item from '../modules/item/item.entity.js';
+import Category from '../modules/category/category.entity.js';
+import Payment from '../modules/payment/payment.entity.js';
 
 const defineAssociations = () => {
 

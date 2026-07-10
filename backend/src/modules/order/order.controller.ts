@@ -1,10 +1,10 @@
 import type { Request, Response } from 'express';
-import { asyncHandler } from '../../middleware/errorHandler';
-import { ValidationError } from '../../utils/errors';
-import { validate } from '../../utils/validate';
-import { createOrderSchema, updateOrderSchema } from './order.dto';
-import orderService from './order.service';
-import Order from './order.entity';
+import { asyncHandler } from '../../middleware/errorHandler.js';
+import { ValidationError } from '../../utils/errors.js';
+import { validate } from '../../utils/validate.js';
+import { createOrderSchema, updateOrderSchema } from './order.dto.js';
+import orderService from './order.service.js';
+import Order from './order.entity.js';
 
 //* Checkout */
 const checkout = asyncHandler(async (req: Request, res: Response) => {
@@ -60,7 +60,7 @@ const getOrderById = asyncHandler(async (req: Request, res: Response) => {
     throw new ValidationError('Order ID is required');
   }
 
-  const order = await orderService.getOrderById(id);
+  const order = await orderService.getOrderById(id as string);
 
   res.status(200).json({
     success: true,
@@ -77,7 +77,7 @@ const getOrdersByUserId = asyncHandler(async (req: Request, res: Response) => {
     throw new ValidationError('User ID is required');
   }
 
-  const orders = await orderService.getOrdersByUserId(userId);
+  const orders = await orderService.getOrdersByUserId(userId as string);
 
   res.status(200).json({
     success: true,
@@ -95,7 +95,7 @@ const updateOrder = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const payload = validate(updateOrderSchema, req.body);
-  const order = await orderService.updateOrder(id, payload);
+  const order = await orderService.updateOrder(id as string, payload);
 
   res.status(200).json({
     success: true,
@@ -112,7 +112,7 @@ const updateOrderStatus = asyncHandler(async (req: Request, res: Response) => {
     throw new ValidationError('Order ID and status are required');
   }
 
-  const order = await orderService.updateOrderStatus(id, status);
+  const order = await orderService.updateOrderStatus(id as string, status);
 
   res.status(200).json({
     success: true,
@@ -129,7 +129,7 @@ const deleteOrder = asyncHandler(async (req: Request, res: Response) => {
     throw new ValidationError('Order ID is required');
   }
 
-  const result = await orderService.deleteOrder(id);
+  const result = await orderService.deleteOrder(id as string);
 
   res.status(200).json({
     success: true,

@@ -1,6 +1,6 @@
-import { PaginatedResult, PaginationOptions } from "../../utils/pagination";
-import { CreateCartDto } from "./cart.dto";
-import Cart from "./cart.entity";
+import { PaginatedResult, PaginationOptions } from "../../utils/pagination.js";
+import { CreateCartDto } from "./cart.dto.js";
+import Cart from "./cart.entity.js";
 import { Order as Order_, Transaction } from "sequelize";
 
 class CartRepository {

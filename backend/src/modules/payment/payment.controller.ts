@@ -1,10 +1,10 @@
 import type { Request, Response } from 'express';
-import { asyncHandler } from '../../middleware/errorHandler';
-import { ValidationError } from '../../utils/errors';
-import { validate } from '../../utils/validate';
-import { createPaymentSchema, PaymentStatusEnum, updatePaymentSchema } from './payment.dto';
-import paymentService from './payment.service';
-import Payment from './payment.entity';
+import { asyncHandler } from '../../middleware/errorHandler.js';
+import { ValidationError } from '../../utils/errors.js';
+import { validate } from '../../utils/validate.js';
+import { createPaymentSchema, PaymentStatusEnum, updatePaymentSchema } from './payment.dto.js';
+import paymentService from './payment.service.js';
+import Payment from './payment.entity.js';
 
 // Create Razorpay order
 const createRazorpayOrder = asyncHandler(async (req: Request, res: Response) => {
@@ -95,7 +95,7 @@ const getPaymentById = asyncHandler(async (req: Request, res: Response) => {
     throw new ValidationError('Payment ID is required');
   }
 
-  const payment = await paymentService.getPaymentById(id);
+  const payment = await paymentService.getPaymentById(id as string);
 
   res.status(200).json({
     success: true,
@@ -112,7 +112,7 @@ const getPaymentByOrderId = asyncHandler(async (req: Request, res: Response) => 
     throw new ValidationError('Order ID is required');
   }
 
-  const payment = await paymentService.getPaymentByOrderId(orderId);
+  const payment = await paymentService.getPaymentByOrderId(orderId as string);
 
   res.status(200).json({
     success: true,
@@ -129,7 +129,7 @@ const getPaymentsByUserId = asyncHandler(async (req: Request, res: Response) => 
     throw new ValidationError('User ID is required');
   }
 
-  const payments = await paymentService.getPaymentsByUserId(userId);
+  const payments = await paymentService.getPaymentsByUserId(userId as string);
 
   res.status(200).json({
     success: true,
@@ -146,7 +146,7 @@ const getPaymentsByStatus = asyncHandler(async (req: Request, res: Response) => 
     throw new ValidationError('Payment status is required');
   }
 
-  const payments = await paymentService.getPaymentsByStatus(status);
+  const payments = await paymentService.getPaymentsByStatus(status as string);
 
   res.status(200).json({
     success: true,
@@ -164,7 +164,7 @@ const updatePayment = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const payload = validate(updatePaymentSchema, req.body);
-  const payment = await paymentService.updatePayment(id, payload);
+  const payment = await paymentService.updatePayment(id as string, payload);
 
   res.status(200).json({
     success: true,
@@ -182,7 +182,7 @@ const updatePaymentStatus = asyncHandler(async (req: Request, res: Response) => 
     throw new ValidationError('Payment ID is required');
   }
 
-  const payment = await paymentService.updatePaymentStatus(id, paymentStatus as PaymentStatusEnum);
+  const payment = await paymentService.updatePaymentStatus(id as string, paymentStatus as PaymentStatusEnum);
 
   res.status(200).json({
     success: true,
@@ -199,7 +199,7 @@ const deletePayment = asyncHandler(async (req: Request, res: Response) => {
     throw new ValidationError('Payment ID is required');
   }
 
-  const result = await paymentService.deletePayment(id);
+  const result = await paymentService.deletePayment(id as string);
 
   res.status(200).json({
     success: true,

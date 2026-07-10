@@ -1,12 +1,12 @@
-import Payment from './payment.entity';
-import { NotFoundError, ValidationError } from '../../utils/errors';
-import type { CreatePaymentDto, UpdatePaymentDto, PaymentDto } from './payment.dto';
-import paymentRepository, { PaymentStats } from './payment.repository';
-import { PaginationOptions, PaginatedResult } from '../../utils/pagination';
-import razorpay from '../../config/razorpay';
+import Payment from './payment.entity.js';
+import { NotFoundError, ValidationError } from '../../utils/errors.js';
+import type { CreatePaymentDto, UpdatePaymentDto, PaymentDto } from './payment.dto.js';
+import paymentRepository, { PaymentStats } from './payment.repository.js';
+import { PaginationOptions, PaginatedResult } from '../../utils/pagination.js';
+import razorpay from '../../config/razorpay.js';
 import { createHmac } from 'crypto';
-import orderRepository from '../order/order.repository';
-import sequelize from '../../config/database';
+import orderRepository from '../order/order.repository.js';
+import sequelize from '../../config/database.js';
 
 const toPaymentDto = (payment: Payment): PaymentDto => payment.toJSON() as unknown as PaymentDto;
 

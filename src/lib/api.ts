@@ -542,6 +542,7 @@ export const cartApi = {
   getCartItems: async (userId: string) => {
     try {
       const cart = await cartApi.getCartByUserId(userId);
+      console.log('Current cart for user', userId, ':', cart);
       if (!cart) {
         return [];
       }

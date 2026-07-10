@@ -1,7 +1,7 @@
-import { CreateOrderDto, UpdateOrderDto } from "./order.dto";
-import Order from "./order.entity";
+import { CreateOrderDto, UpdateOrderDto } from "./order.dto.js";
+import Order from "./order.entity.js";
 import { Order as Order_, Transaction } from "sequelize";
-import { PaginationOptions, PaginatedResult } from "../../utils/pagination";
+import { PaginationOptions, PaginatedResult } from "../../utils/pagination.js";
 
 class OrderRepository {
     async create(data: CreateOrderDto, transaction?: Transaction): Promise<Order> {

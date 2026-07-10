@@ -1,8 +1,8 @@
-import OrderItem from './orderItem.entity';
-import { NotFoundError } from '../../utils/errors';
-import type { CreateOrderItemDto, UpdateOrderItemDto, OrderItemDto } from './orderItem.dto';
-import orderItemRepository from './orderItem.repository';
-import type { PaginationOptions, PaginatedResult } from '../../utils/pagination';
+import OrderItem from './orderItem.entity.js';
+import { NotFoundError } from '../../utils/errors.js';
+import type { CreateOrderItemDto, UpdateOrderItemDto, OrderItemDto } from './orderItem.dto.js';
+import orderItemRepository from './orderItem.repository.js';
+import type { PaginationOptions, PaginatedResult } from '../../utils/pagination.js';
 
 const toOrderItemDto = (orderItem: OrderItem): OrderItemDto => orderItem.toJSON() as OrderItemDto;
 

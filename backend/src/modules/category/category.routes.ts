@@ -1,6 +1,6 @@
 import express from "express";
-import categoryController from "./category.controller";
-import { auth, isAdmin } from "../../middleware/index";
+import categoryController from "./category.controller.js";
+import { auth, isAdmin } from "../../middleware/index.js";
 
 const categoryRouter = express.Router();
 

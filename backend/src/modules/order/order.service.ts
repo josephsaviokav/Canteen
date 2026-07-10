@@ -1,17 +1,16 @@
-import Order from './order.entity';
-import { NotFoundError, ValidationError } from '../../utils/errors';
-import type { CreateOrderDto, UpdateOrderDto, OrderDto } from './order.dto';
-import orderRepository from './order.repository';
-import { PaginationOptions, PaginatedResult } from '../../utils/pagination';
-import cartRepository from '../cart/cart.repository';
-import cartItemRepository from '../cartItem/cartItem.repository';
-import Item from '../item/item.entity';
-import { Sequelize } from 'sequelize';
-import sequelize from '../../config/database';
-import orderItemRepository from '../orderItem/orderItem.repository';
-import paymentRepository from '../payment/payment.repository';
-import CartItem from '../cartItem/cartItem.entity';
-import razorpay from '../../config/razorpay';
+import Order from './order.entity.js';
+import { NotFoundError, ValidationError } from '../../utils/errors.js';
+import type { CreateOrderDto, UpdateOrderDto, OrderDto } from './order.dto.js';
+import orderRepository from './order.repository.js';
+import { PaginationOptions, PaginatedResult } from '../../utils/pagination.js';
+import cartRepository from '../cart/cart.repository.js';
+import cartItemRepository from '../cartItem/cartItem.repository.js';
+import Item from '../item/item.entity.js';
+import sequelize from '../../config/database.js';
+import orderItemRepository from '../orderItem/orderItem.repository.js';
+import paymentRepository from '../payment/payment.repository.js';
+import CartItem from '../cartItem/cartItem.entity.js';
+import razorpay from '../../config/razorpay.js';
 
 const toOrderDto = (order: Order): OrderDto => order.toJSON() as OrderDto;
 

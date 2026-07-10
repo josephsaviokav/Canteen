@@ -1,5 +1,5 @@
 import { CreationOptional, DataTypes, ENUM, InferAttributes, InferCreationAttributes, Model } from "sequelize";
-import sequelize from "../../config/database";
+import sequelize from "../../config/database.js";
 
 const PaymentMethod = ENUM("CREDIT_CARD", "UPI", "NET_BANKING");
 const PaymentStatus = ENUM("PENDING", "COMPLETED", "FAILED");

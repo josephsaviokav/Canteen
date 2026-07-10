@@ -1,7 +1,7 @@
-import { NotFoundError } from "../../utils/errors";
-import { CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from "./category.dto";
-import Category from "./category.entity";
-import CategoryRepository from "./category.repository";
+import { NotFoundError } from "../../utils/errors.js";
+import { CategoryDTO, CreateCategoryDTO, UpdateCategoryDTO } from "./category.dto.js";
+import Category from "./category.entity.js";
+import CategoryRepository from "./category.repository.js";
 
 const toCategoryDTO = (category: Category): CategoryDTO => {
     return category.toJSON() as CategoryDTO;
