@@ -1,9 +1,9 @@
 import { get } from "http";
-import { NotFoundError } from "../../utils/errors";
-import { PaginatedResult, PaginationOptions } from "../../utils/pagination";
-import { CartItemDTO, CreateCartItemDTO, UpdateCartItemDTO } from "./cartItem.dto";
-import CartItem from "./cartItem.entity";
-import CartItemRepository from "./cartItem.repository";
+import { NotFoundError } from "../../utils/errors.js";
+import { PaginatedResult, PaginationOptions } from "../../utils/pagination.js";
+import { CartItemDTO, CreateCartItemDTO, UpdateCartItemDTO } from "./cartItem.dto.js";
+import CartItem from "./cartItem.entity.js";
+import CartItemRepository from "./cartItem.repository.js";
 
 const toCartItemDto = (cartItem: CartItem) : CartItemDTO => {
     return cartItem.toJSON() as CartItemDTO;
@@ -11,6 +11,15 @@ const toCartItemDto = (cartItem: CartItem) : CartItemDTO => {
 
 // create a cartItem
 const createCartItem = async (data: CreateCartItemDTO) : Promise<CartItemDTO> => {
+    const existingCartItem = await CartItemRepository.findByCartIdAndItemId(data.cartId, data.itemId);
+    if(existingCartItem) {
+        const updatedQuantity = existingCartItem.quantity + data.quantity;
+        const updatedCartItem = await CartItemRepository.update(existingCartItem.cartItemId, { quantity: updatedQuantity });
+        if (!updatedCartItem) {
+            throw new NotFoundError('Cart item not found');
+        }
+        return toCartItemDto(updatedCartItem);
+    }
     const cartItem = await CartItemRepository.create(data);
     return toCartItemDto(cartItem);
 }

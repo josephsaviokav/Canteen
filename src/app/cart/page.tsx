@@ -8,6 +8,7 @@ export default function CartPage() {
 	const router = useRouter();
 	const { cart, removeFromCart, clearCart } = useCart();
 
+	// refreshCart(); // Refresh cart items on page load
 	// Calculate total price directly
 	const totalPrice = cart.reduce((sum, cartItem) => sum + ((cartItem.item?.price ?? 0) * cartItem.quantity), 0);
 

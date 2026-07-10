@@ -28,6 +28,7 @@ interface CartContextType {
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
+// const userId = localStorage.getItem("user");
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -67,7 +68,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (!userId) return;
     
     try {
+      console.log("Refreshing cart for user:", userId);
       const cartItems = await cartApi.getCartItems(userId);
+      console.log("Fetched cart items:", cartItems);
       setCart(cartItems);
     } catch (error) {
       console.error("Failed to fetch cart items:", error);
@@ -76,7 +79,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    if (userId) {
+    const user = localStorage.getItem("user");
+    // console.log("User from localStorage:", user);
+    setUserId(user ? JSON.parse(user).userId : null);
+    // setUserId(localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : null);
+    if (user) {
       refreshCart();
     }
   }, [userId]);
@@ -85,6 +92,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addToCart = async (userId: string, itemId: string, quantity: number) => {
     try {
       await cartApi.addToCart(userId, itemId, quantity);
+      setUserId(userId); // Ensure userId is set before refreshing cart
       await refreshCart();
     } catch (error) {
       console.error("Failed to add to cart:", error);

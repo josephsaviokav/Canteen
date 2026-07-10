@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import cartItemController from './cartItem.controller';
-import { auth, isAdmin } from '../../middleware/index';
+import cartItemController from './cartItem.controller.js';
+import { auth, isAdmin } from '../../middleware/index.js';
 
 const cartItemRouter = Router();
 

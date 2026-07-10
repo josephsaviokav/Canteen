@@ -1,10 +1,10 @@
 import type { Request, Response } from 'express';
-import { asyncHandler } from '../../middleware/errorHandler';
-import { ValidationError } from '../../utils/errors';
-import { validate } from '../../utils/validate';
-import { createCartItemSchema } from './cartItem.dto';
-import cartItemService from './cartItem.service';
-import CartItem from './cartItem.entity';
+import { asyncHandler } from '../../middleware/errorHandler.js';
+import { ValidationError } from '../../utils/errors.js';
+import { validate } from '../../utils/validate.js';
+import { createCartItemSchema } from './cartItem.dto.js';
+import cartItemService from './cartItem.service.js';
+import CartItem from './cartItem.entity.js';
 
 // create cart item
 const createCartItem = asyncHandler(async (req: Request, res: Response) => {
@@ -22,7 +22,7 @@ const createCartItem = asyncHandler(async (req: Request, res: Response) => {
 
 // get cart item by ID
 const getCartItemById = asyncHandler(async (req: Request, res: Response) => {
-    const { cartItemId } = req.params;
+    const { cartItemId } = req.params as { cartItemId: string };
     const cartItem = await cartItemService.getCartItemById(cartItemId);
     res.status(200).json({
         success: true,
@@ -33,7 +33,7 @@ const getCartItemById = asyncHandler(async (req: Request, res: Response) => {
 
 // get cart items by cartId
 const getCartItemsByCartId = asyncHandler(async (req: Request, res: Response) => {
-    const { cartId } = req.params;
+    const { cartId } = req.params as { cartId: string };
 
     if (!cartId) {
         throw new ValidationError('Cart ID is required');
@@ -50,7 +50,7 @@ const getCartItemsByCartId = asyncHandler(async (req: Request, res: Response) =>
 
 // update cart item
 const updateCartItem = asyncHandler(async (req: Request, res: Response) => {
-    const { cartItemId } = req.params;
+    const { cartItemId } = req.params as { cartItemId: string };
 
     if (!cartItemId) {
         throw new ValidationError('Cart item ID is required');
@@ -85,7 +85,7 @@ const getAllCartItems = asyncHandler(async (req: Request, res: Response) => {
 
 // delete cart item
 const deleteCartItem = asyncHandler(async (req: Request, res: Response) => {
-    const { cartItemId } = req.params;
+    const { cartItemId } = req.params as { cartItemId: string };
 
     if (!cartItemId) {
         throw new ValidationError('Cart item ID is required');

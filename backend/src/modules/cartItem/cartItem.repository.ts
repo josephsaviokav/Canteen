@@ -1,9 +1,9 @@
 import { Transaction } from "sequelize";
-import { CreateCartItemDTO, UpdateCartItemDTO } from "./cartItem.dto";
-import CartItem from "./cartItem.entity";
+import { CreateCartItemDTO, UpdateCartItemDTO } from "./cartItem.dto.js";
+import CartItem from "./cartItem.entity.js";
 import { Order as Order_ } from "sequelize";
-import { PaginatedResult, PaginationOptions } from "../../utils/pagination";
-import Item from "../item/item.entity";
+import { PaginatedResult, PaginationOptions } from "../../utils/pagination.js";
+import Item from "../item/item.entity.js";
 
 class CartItemRepository {
     async create(data: CreateCartItemDTO, transaction?: Transaction): Promise<CartItem> {
@@ -19,6 +19,10 @@ class CartItemRepository {
             where: { cartId },
             include: [{ model: Item, as: 'item' }],
         });
+    }
+
+    async findByCartIdAndItemId(cartId: string, itemId: string): Promise<CartItem | null> {
+        return await CartItem.findOne({ where: { cartId, itemId } });
     }
 
     async findById(cartItemId: string): Promise<CartItem | null> {

@@ -10,7 +10,7 @@ const geist = Geist({ subsets: ["latin"] });
 const geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Can-Tea-N",
+  title: "Nosh & go",
   description: "Order delicious food online",
 };
 
