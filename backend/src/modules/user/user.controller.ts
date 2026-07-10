@@ -1,18 +1,18 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import { generateToken } from '../../middleware/authorize';
-import { ValidationError } from '../../utils/errors';
+import { generateToken } from '../../middleware/authorize.js';
+import { ValidationError } from '../../utils/errors.js';
 import {
     createUserSchema,
     forgotPasswordSchema,
     signInSchema,
     updatePasswordSchema,
     updateUserSchema,
-} from './user.dto';
-import userService from './user.service';
-import { validate } from '../../utils/validate';
-import { asyncHandler } from '../../middleware/errorHandler';
-import User from './user.entity';
+} from './user.dto.js';
+import userService from './user.service.js';
+import { validate } from '../../utils/validate.js';
+import { asyncHandler } from '../../middleware/errorHandler.js';
+import User from './user.entity.js';
 
 
 //  Sign up a new user
@@ -85,7 +85,7 @@ const getUserById = asyncHandler(async (req: Request, res: Response, next: NextF
         throw new ValidationError('User ID is required');
     }
 
-    const user = await userService.getUserById(id);
+    const user = await userService.getUserById(id as string);
 
     res.status(200).json({
         success: true,
@@ -103,7 +103,7 @@ const updateUser = asyncHandler(async (req: Request, res: Response, next: NextFu
     }
 
     const payload = validate(updateUserSchema, req.body);
-    const user = await userService.updateUser(id, payload);
+    const user = await userService.updateUser(id as string, payload);
 
     res.status(200).json({
         success: true,
@@ -121,7 +121,7 @@ const updatePassword = asyncHandler(async (req: Request, res: Response, next: Ne
     }
 
     const payload = validate(updatePasswordSchema, req.body);
-    const user = await userService.updatePassword(id, payload);
+    const user = await userService.updatePassword(id as string, payload);
 
     res.status(200).json({
         success: true,
@@ -150,7 +150,7 @@ const deleteUser = asyncHandler(async (req: Request, res: Response, next: NextFu
         throw new ValidationError('User ID is required');
     }
 
-    const result = await userService.deleteUser(id);
+    const result = await userService.deleteUser(id as string);
 
     res.status(200).json({
         success: true,

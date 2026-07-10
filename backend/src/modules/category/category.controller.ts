@@ -1,9 +1,9 @@
 import type { Request, Response } from 'express';
-import { asyncHandler } from '../../middleware/errorHandler';
-import { ValidationError } from '../../utils/errors';
-import { validate } from '../../utils/validate';
-import { createCategorySchema } from './category.dto';
-import categoryService from './category.service';
+import { asyncHandler } from '../../middleware/errorHandler.js';
+import { ValidationError } from '../../utils/errors.js';
+import { validate } from '../../utils/validate.js';
+import { createCategorySchema } from './category.dto.js';
+import categoryService from './category.service.js';
 
 // create category
 const createCategory = asyncHandler(async (req: Request, res: Response) => {
@@ -36,7 +36,7 @@ const getCategoryById = asyncHandler(async (req: Request, res: Response) => {
         throw new ValidationError('Category ID is required');
     }
 
-    const category = await categoryService.getCategoryById(id);
+    const category = await categoryService.getCategoryById(id as string);
 
     res.status(200).json({
         success: true,
@@ -54,7 +54,7 @@ const updateCategory = asyncHandler(async (req: Request, res: Response) => {
     }
 
     const payload = validate(createCategorySchema, req.body);
-    const category = await categoryService.updateCategory(id, payload);
+    const category = await categoryService.updateCategory(id as string, payload);
 
     res.status(200).json({
         success: true,
@@ -71,7 +71,7 @@ const deleteCategory = asyncHandler(async (req: Request, res: Response) => {
         throw new ValidationError('Category ID is required');
     }
 
-    const result = await categoryService.deleteCategory(id);
+    const result = await categoryService.deleteCategory(id as string);
 
     res.status(200).json({
         success: true,

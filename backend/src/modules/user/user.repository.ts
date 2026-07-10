@@ -1,7 +1,7 @@
 import { Op, Transaction, WhereOptions, Order } from "sequelize";
-import User from "./user.entity";
-import { CreateUserDTO, UpdateUserDTO } from "./user.dto";
-import { PaginationOptions, PaginatedResult } from "../../utils/pagination";
+import User from "./user.entity.js";
+import { CreateUserDTO, UpdateUserDTO } from "./user.dto.js";
+import { PaginationOptions, PaginatedResult } from "../../utils/pagination.js";
 
 // Repository
 

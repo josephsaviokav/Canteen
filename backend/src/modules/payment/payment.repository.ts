@@ -1,8 +1,8 @@
-import sequelize from "../../config/database";
+import sequelize from "../../config/database.js";
 import { Transaction } from "sequelize";
-import { CreatePaymentDto, UpdatePaymentDto } from "./payment.dto";
-import Payment from "./payment.entity";
-import { PaginationOptions, PaginatedResult } from "../../utils/pagination";
+import { CreatePaymentDto, UpdatePaymentDto } from "./payment.dto.js";
+import Payment from "./payment.entity.js";
+import { PaginationOptions, PaginatedResult } from "../../utils/pagination.js";
 
 export interface PaymentStats {
     totalPayments: number;

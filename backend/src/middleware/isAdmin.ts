@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
-import { asyncHandler } from './errorHandler';
-import { ForbiddenError } from '../utils/errors';
+import { asyncHandler } from './errorHandler.js';
+import { ForbiddenError } from '../utils/errors.js';
 
 const isAdmin = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     if (req.user?.role !== 'admin') {

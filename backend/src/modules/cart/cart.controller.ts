@@ -1,10 +1,10 @@
 import type { Request, Response } from 'express';
-import { asyncHandler } from '../../middleware/errorHandler';
-import { ValidationError } from '../../utils/errors';
-import { validate } from '../../utils/validate';
-import { createCartSchema } from './cart.dto';
-import cartService from './cart.service';
-import Cart from './cart.entity';
+import { asyncHandler } from '../../middleware/errorHandler.js';
+import { ValidationError } from '../../utils/errors.js';
+import { validate } from '../../utils/validate.js';
+import { createCartSchema } from './cart.dto.js';
+import cartService from './cart.service.js';
+import Cart from './cart.entity.js';
 
 // create cart
 const createCart = asyncHandler(async (req: Request, res: Response) => {
@@ -27,7 +27,7 @@ const getCartByUserId = asyncHandler(async (req: Request, res: Response) => {
         throw new ValidationError('User ID is required');
     }
 
-    const cart = await cartService.getCartByUserId(userId);
+    const cart = await cartService.getCartByUserId(userId as string);
 
     res.status(200).json({
         success: true,

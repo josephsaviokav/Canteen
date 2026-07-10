@@ -1,7 +1,7 @@
 import express from 'express';
-import itemController from './item.controller';
-import { auth, isAdmin } from '../../middleware/index';
-import { upload } from '../../utils/upload';
+import itemController from './item.controller.js';
+import { auth, isAdmin } from '../../middleware/index.js';
+import { upload } from '../../utils/upload.js';
 
 const itemRouter = express.Router();
 

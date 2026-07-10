@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { asyncHandler } from './errorHandler';
-import { UnauthorizedError } from '../utils/errors';
+import { asyncHandler } from './errorHandler.js';
+import { UnauthorizedError } from '../utils/errors.js';
 
 
 //  User payload DTO for authentication token

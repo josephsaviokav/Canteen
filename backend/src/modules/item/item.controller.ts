@@ -1,11 +1,11 @@
 import type { Request, Response } from 'express';
-import { asyncHandler } from '../../middleware/errorHandler';
-import { ValidationError } from '../../utils/errors';
-import { validate } from '../../utils/validate';
-import { createItemSchema, updateItemSchema } from './item.dto';
-import itemService from './item.service';
-import Item from './item.entity';
-import { uploadImage } from '../../utils/cloudinary';
+import { asyncHandler } from '../../middleware/errorHandler.js';
+import { ValidationError } from '../../utils/errors.js';
+import { validate } from '../../utils/validate.js';
+import { createItemSchema, updateItemSchema } from './item.dto.js';
+import itemService from './item.service.js';
+import Item from './item.entity.js';
+import { uploadImage } from '../../utils/cloudinary.js';
 
 // Create a new item
 const createItem = asyncHandler(async (req: Request, res: Response) => {
@@ -50,7 +50,7 @@ const getItemById = asyncHandler(async (req: Request, res: Response) => {
     throw new ValidationError('Item ID is required');
   }
 
-  const item = await itemService.getItemById(id);
+  const item = await itemService.getItemById(id as string);
 
   res.status(200).json({
     success: true,
@@ -73,7 +73,7 @@ const updateItem = asyncHandler(async (req: Request, res: Response) => {
   }
 
   const payload = validate(updateItemSchema, { ...req.body, imageUrl });
-  const item = await itemService.updateItem(id, payload);
+  const item = await itemService.updateItem(id as string, payload);
 
   res.status(200).json({
     success: true,
@@ -90,7 +90,7 @@ const deleteItem = asyncHandler(async (req: Request, res: Response) => {
     throw new ValidationError('Item ID is required');
   }
 
-  const result = await itemService.deleteItem(id);
+  const result = await itemService.deleteItem(id as string);
 
   res.status(200).json({
     success: true,

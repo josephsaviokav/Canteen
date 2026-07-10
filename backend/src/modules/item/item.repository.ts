@@ -1,7 +1,7 @@
-import { CreateItemDto, UpdateItemDto } from "./item.dto";
-import Item from "./item.entity";
+import { CreateItemDto, UpdateItemDto } from "./item.dto.js";
+import Item from "./item.entity.js";
 import { Order as Order_, Transaction } from "sequelize";
-import { PaginationOptions, PaginatedResult } from "../../utils/pagination";
+import { PaginationOptions, PaginatedResult } from "../../utils/pagination.js";
 
 class ItemRepository {
     async create(data: CreateItemDto, transaction?: Transaction): Promise<Item> {

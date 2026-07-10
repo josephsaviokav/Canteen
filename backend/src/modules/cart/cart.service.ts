@@ -1,8 +1,8 @@
-import { ConflictError, NotFoundError } from "../../utils/errors";
-import { PaginatedResult, PaginationOptions } from "../../utils/pagination";
-import { CartDto, CreateCartDto } from "./cart.dto";
-import Cart from "./cart.entity";
-import CartRepository from "./cart.repository";
+import { ConflictError, NotFoundError } from "../../utils/errors.js";
+import { PaginatedResult, PaginationOptions } from "../../utils/pagination.js";
+import { CartDto, CreateCartDto } from "./cart.dto.js";
+import Cart from "./cart.entity.js";
+import CartRepository from "./cart.repository.js";
 
 const toCartDto = (cart: Cart): CartDto => {
     return cart.toJSON() as CartDto;

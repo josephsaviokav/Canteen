@@ -1,6 +1,6 @@
 import { Transaction } from "sequelize";
-import { CreateCategoryDTO, UpdateCategoryDTO } from "./category.dto";
-import Category from "./category.entity";
+import { CreateCategoryDTO, UpdateCategoryDTO } from "./category.dto.js";
+import Category from "./category.entity.js";
 
 class CategoryRepository {
     async create(data: CreateCategoryDTO,transaction?: Transaction): Promise<Category> {

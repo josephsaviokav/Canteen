@@ -1,6 +1,6 @@
 import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model } from "sequelize";
-import sequelize from "../../config/database";
-import { OrderStatus } from "./order.dto";
+import sequelize from "../../config/database.js";
+import { OrderStatus } from "./order.dto.js";
 
 class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>>{
     declare orderId: CreationOptional<string>;
