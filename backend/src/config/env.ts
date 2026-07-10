@@ -14,7 +14,7 @@ const envSchema = z.object({
     DB_PASSWORD: z.string().optional(),
     DB_HOST: z.string().optional(),
     DB_PORT: z.string().optional(),
-    DATABASE_URL: z.string().optional(),
+    DIRECT_URL: z.string().optional(),
 
     // JWT
     JWT_SECRET: z.string().min(1, 'JWT_SECRET is required'),
